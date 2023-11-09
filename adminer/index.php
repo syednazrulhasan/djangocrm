@@ -1,4 +1,4 @@
-<?php
+<?php 
 function adminer_object() {
 	include_once "./plugins/plugin.php";
 	include_once "./plugins/login-password-less.php";
@@ -18,4 +18,4 @@ function adminer_object() {
 	));
 }
 
-include "./adminer.php";
+include "./editor.php";
