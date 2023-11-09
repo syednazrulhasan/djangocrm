@@ -1,0 +1,85 @@
+{% load static %}
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% block title %}Custom Title{% endblock %}</title>
+
+  <link href="{% static 'css/bootstrap.min.css' %}" rel="stylesheet">
+
+  <link rel="icon" href="{% static 'images/favicon.ico' %}">
+
+  {% block additional_styles %}{% endblock %}
+
+  <!-- Custom styles for this template -->
+  <style type="text/css">
+     .navbar{
+        padding: 0px;
+        position: sticky;
+        top: 0;
+    }
+</style>
+</head>
+<body class="d-flex flex-column h-100">
+
+  <main>
+    {% block navigation %}
+    <nav class="navbar navbar-expand-lg navbar-light bg-light" aria-label="Eighth navbar example">
+        <div class="container">
+            <a class="navbar-brand" href="#">
+                <img src="{% static 'logo.png' %}"/>
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarsExample07" aria-controls="navbarsExample07" aria-expanded="false" aria-label="Toggle navigation">
+              <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <div class="collapse navbar-collapse" id="navbarsExample07">
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                <li class="nav-item">
+                  <a class="nav-link active" aria-current="page" href="#">Home</a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" href="#">Link</a>
+                </li>
+                
+                <li class="nav-item dropdown">
+                  <a class="nav-link dropdown-toggle" href="#" id="dropdown07" data-bs-toggle="dropdown" aria-expanded="false">Students</a>
+                    <ul class="dropdown-menu" aria-labelledby="dropdown07">
+                        <li><a class="dropdown-item" href="#">Add Students</a></li>
+                        <li><a class="dropdown-item" href="#">All Students</a></li>
+                        <li><a class="dropdown-item" href="#">Export Students</a></li>
+                    </ul>
+                </li>
+                </ul>
+                <!-- <form>
+                  <input class="form-control" type="text" placeholder="Search" aria-label="Search">
+                </form> -->
+            </div>
+        </div>
+    </nav>
+    {% endblock %}
+
+    <div class="container">
+        {% block content %}
+        <h2>What is Lorem Ipsum?</h2>
+
+        <p>Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.</p>
+        {% endblock %}
+    </div>
+
+
+</main>
+
+<footer class="footer mt-auto py-3 bg-dark">
+    {% block footer %}
+      <div class="container">
+        <span class="text-muted">&copy; Advatech HR Services Pvt Ltd</span>
+      </div>
+    {% endblock %}
+</footer>
+
+<script src="{% static 'js/bootstrap.bundle.min.js' %}"></script>
+{% block additional_scripts %}{% endblock %}
+
+</body>
+</html>
