@@ -1,4 +1,4 @@
-from django.shortcuts import render, HttpResponse ,redirect
+from django.shortcuts import render, HttpResponse, redirect, get_object_or_404
 from datetime import datetime
 from .models import Course
 from django.contrib import messages
@@ -17,22 +17,33 @@ def all_course(request):
 	return render(request,'all-course.html',context)
 
 def add_course(request):
-	if request.method == "POST":
-		course_name = request.POST.get('coursename')
-		course_fee  = request.POST.get('coursefee')
-		courseduration = request.POST.get('courseduration')
-		course = Course(course_name = course_name, course_fee = course_fee, course_duration = courseduration, date_created= datetime.today())
-		course.save()
-		messages.success(request,'Course Added Succesfully')
-		return redirect('all_course')
-	return render(request,'add-course.html')
+    if request.method == "POST":
+        record_id = request.POST.get('recordid')
+        course_name = request.POST.get('coursename')
+        course_fee = request.POST.get('coursefee')
+        courseduration = request.POST.get('courseduration')
+
+        if record_id:
+            course = get_object_or_404(Course, course_id=record_id)
+            course.course_name = course_name
+            course.course_fee = course_fee
+            course.course_duration = courseduration
+            course.save()
+            messages.success(request, 'Course Updated Successfully')
+        else:
+            course = Course(course_name=course_name, course_fee=course_fee, course_duration=courseduration, date_created=datetime.today())
+            course.save()
+            messages.success(request, 'Course Added Successfully')
+
+        return redirect('all_course')
+    return render(request, 'add-course.html')
+
 
 def edit_course(request,course_id):
-	editcourse = Course.objects.get(course_id=course_id)	
-
+	coursedetails = Course.objects.get(course_id=course_id)	
+	return render(request,'edit-course.html',	{ 'coursedetails' : coursedetails })
 	messages.success(request,'Course Updated Succesfully')
 	return redirect('all_course')
-	
 
 def delete_course(request,course_id):
 	deleteit = Course.objects.get(course_id=course_id)	
