@@ -11,7 +11,8 @@
       	</div>
 
 
-		<form>
+		<form method="POST" action="{% url 'courses' %}">
+			{% csrf_token %}
 
 		  <div class="form-group">
 		    <label for="exampleInputEmail1">Course Name</label>
