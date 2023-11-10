@@ -6,9 +6,14 @@ urlpatterns = [
     path('', views.index, name='home'),
     path('dashboard', views.about, name='dashboard'),
     path('all-course', views.all_course, name='all_course'),
-    path('add-course', views.add_course, name='add_course'),
-    path('edit-course/<int:course_id>/', views.edit_course, name='edit_course'),
+    #path('add-course', views.add_course, name='add_course'),
+    #path('edit-course/<int:course_id>/', views.edit_course, name='edit_course'),
+    
+    path('add-course/', views.add_edit_course, name='add_course'),  # Use the same view for add and edit
+    path('edit-course/<int:course_id>/', views.add_edit_course, name='edit_course'),  # Use the same view for add and edit
+   
     path('delete-course/<int:course_id>/', views.delete_course, name='delete_course'),
+
     path('batches', views.about, name='batches'),
     path('add-batches', views.about, name='add-batches'),
     path('candidates', views.services, name='candidates'),

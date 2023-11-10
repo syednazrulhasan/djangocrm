@@ -7,20 +7,22 @@
     <div class="col-6">
 
     	<div class="py-4 text-center">
-        	<h2>Add New Course</h2>
+        	<h2>{% if coursedetails.course_id %}Edit Course{% else %}Add New Course{% endif %}</h2>
       	</div>
 
-		<form method="POST" action="{% url 'add_course' %}">
-			<input type="hidden" name="recordid" value="{{coursedetails.course_id}}">
+		<form method="POST" action="{% if coursedetails.course_id %}{% url 'edit_course' course_id=coursedetails.course_id %}{% else %}{% url 'add_course' %}{% endif %}">
+    
+
+			<input type="hidden" name="recordid" value="{{ coursedetails.course_id }}">
 			{% csrf_token %}
 
 		  <div class="form-group">
 		    <label for="exampleInputEmail1">Course Name</label>
-		    <input type="text" name="coursename" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Enter the course name" value="{{coursedetails.course_name}}">
+		    <input type="text" name="coursename" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Enter the course name" value="{{ coursedetails.course_name }}">
 		  </div>
 		  <div class="form-group">
 		    <label for="exampleInputPassword1">Course Fee(₹)</label>
-		    <input type="text"  name="coursefee" class="form-control" id="exampleInputPassword1" placeholder="Enter Fee" value="{{coursedetails.course_fee}}">
+		    <input type="text"  name="coursefee" class="form-control" id="exampleInputPassword1" placeholder="Enter Fee" value="{{ coursedetails.course_fee }}">
 		  </div>
 
 		  <div class="form-group">
@@ -40,7 +42,6 @@
 			</select>
 		  </div>
 
-		  
 		  <div class="form-group mt-3">
 		  		<button type="submit" class="btn btn-primary">Submit</button>
 		  </div>
