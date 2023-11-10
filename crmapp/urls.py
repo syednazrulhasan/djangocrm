@@ -5,8 +5,10 @@ from crmapp import views
 urlpatterns = [
     path('', views.index, name='home'),
     path('dashboard', views.about, name='dashboard'),
-    path('courses', views.courses, name='courses'),
-    path('add-course', views.about, name='add-course'),
+    path('all-course', views.all_course, name='all_course'),
+    path('add-course', views.add_course, name='add_course'),
+    path('edit-course/<int:course_id>/', views.edit_course, name='edit_course'),
+    path('delete-course/<int:course_id>/', views.delete_course, name='delete_course'),
     path('batches', views.about, name='batches'),
     path('add-batches', views.about, name='add-batches'),
     path('candidates', views.services, name='candidates'),

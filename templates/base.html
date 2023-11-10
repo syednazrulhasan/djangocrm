@@ -6,6 +6,7 @@
   <title>{% block title %}Custom Title{% endblock %}</title>
 
   <link href="{% static 'css/bootstrap.min.css' %}" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
 
   <link rel="icon" href="{% static 'images/favicon.ico' %}">
 
@@ -42,8 +43,8 @@
                 <li class="nav-item dropdown">
                   <a class="nav-link dropdown-toggle" href="#" id="dropdown07" data-bs-toggle="dropdown" aria-expanded="false">Courses</a>
                     <ul class="dropdown-menu" aria-labelledby="dropdown07">
-                        <li><a class="dropdown-item" href="#">All Courses</a></li>
-                        <li><a class="dropdown-item" href="#">Add Course</a></li>
+                        <li><a class="dropdown-item" href="{% url 'all_course' %}">All Courses</a></li>
+                        <li><a class="dropdown-item" href="{% url 'add_course' %}">Add Course</a></li>
                     </ul>
                 </li>
 
