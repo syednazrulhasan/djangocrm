@@ -11,6 +11,9 @@ def index(request):
 	return render(request,'home.html',content)
 	#return HttpResponse("this is home page")
 
+def dashboard(request):
+    return HttpResponse("this is dashboard page")
+
 def all_course(request):
 	all_courses = Course.objects.all()
 	context = {'courses': all_courses}
@@ -50,11 +53,15 @@ def delete_course(request,course_id):
 	deleteit.delete()
 	messages.success(request,'Course Deleted Succesfully')
 	return redirect('all_course')
-	
-def services(request):
-	return HttpResponse('this is services page')
 
-def about(request):
+
+def all_candidate(request):
+    return HttpResponse('this is all candidate page')
+
+def add_edit_candidate(request,course_id=None):
+    return HttpResponse('this is add edit candidate page')
+
+def faculty(request):
 	return HttpResponse('this is about page')
 
 def contact(request):
