@@ -13,8 +13,7 @@ class Userroles(models.Model):
     role_type = models.CharField(max_length=100)
     role_created = models.DateField()
 
-    def __str__(self):
-        return self.role_type
+    
 
 class Users(models.Model):
     user_id = models.AutoField(primary_key=True)
@@ -23,3 +22,4 @@ class Users(models.Model):
     user_name = models.CharField(max_length=255)
     user_phone = models.CharField(max_length=15)
     user_email = models.CharField(max_length=320)
+    date_created = models.DateField(default='2023-11-15')
