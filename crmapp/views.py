@@ -56,7 +56,8 @@ def delete_course(request,course_id):
 
 
 def all_candidate(request):
-    candidates = Users.objects.filter(user_role__role_id=3)
+    #candidates = Users.objects.filter(user_role__role_id=3)
+    candidates = Users.objects.all()
     return render(request,'all-candidates.html',{'candidates': candidates})
 
 def add_edit_candidate(request,user_id=None):
@@ -92,6 +93,18 @@ def add_edit_candidate(request,user_id=None):
     return render(request, 'add-candidate.html', {'user': users, 'userroles':userroles})    
 
 
+def delete_candidate(request,user_id):
+    delete = Users.objects.get(user_id=user_id)
+    delete.delete()
+    messages.success(request,'Candidate Deleted Succesfully')
+    return redirect('all_candidate')
+
+
+def export_candidate(request)
+    candidate = Users.objects.all()
+
+
+
 def faculty(request):
 	return HttpResponse('this is about page')
 
@@ -101,8 +114,11 @@ def contact(request):
 
 def generate_unique_number():
     last_user_id = get_last_inserted_user_id()  # Replace with your logic to fetch the last user_id
-    if (last_user_id > 999 ):
-        last_user_id = 1 
+    if last_user_id is not None:
+        if last_user_id > 999:
+            last_user_id = 1
+    else:
+        last_user_id = 1
     # Increment the last user_id
     new_user_id = last_user_id + 1
 

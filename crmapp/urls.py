@@ -14,6 +14,8 @@ urlpatterns = [
     
     path('all-candidate', views.all_candidate, name='all_candidate'),
     path('add-candidate', views.add_edit_candidate, name='add_candidate'),
+    path('edit-candidate/<int:user_id>/', views.add_edit_candidate, name='edit_candidate'),
+    path('delete_candidate/<int:user_id>/', views.delete_candidate, name='delete_candidate'),
 
     path('batches', views.faculty, name='batches'),
     path('add-batches', views.faculty, name='add-batches'),
