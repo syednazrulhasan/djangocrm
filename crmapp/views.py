@@ -2,6 +2,9 @@ from django.shortcuts import render, HttpResponse, redirect, get_object_or_404
 from datetime import datetime
 from .models import Course,Userroles,Users
 from django.contrib import messages
+import csv
+from django.http import HttpResponse
+from django.utils import timezone
 
 # Create your views here.
 def index(request):
@@ -64,9 +67,11 @@ def add_edit_candidate(request,user_id=None):
     if user_id:
         users = get_object_or_404(Users, user_id=user_id)
         userroles = Userroles.objects.all()
+        courses   = Course.objects.all()
     else:
         users = None
         userroles = Userroles.objects.all()
+        courses   = Course.objects.all()
 
     if request.method == "POST":
         record_id = request.POST.get('recordid')
@@ -90,7 +95,7 @@ def add_edit_candidate(request,user_id=None):
 
         return redirect('all_candidate')
 
-    return render(request, 'add-candidate.html', {'user': users, 'userroles':userroles})    
+    return render(request, 'add-candidate.html', {'user': users, 'courses':courses, 'userroles':userroles})    
 
 
 def delete_candidate(request,user_id):
@@ -99,10 +104,31 @@ def delete_candidate(request,user_id):
     messages.success(request,'Candidate Deleted Succesfully')
     return redirect('all_candidate')
 
+def all_enrollment(request):
+    return HttpResponse('all enrollment')
 
-def export_candidate(request)
-    candidate = Users.objects.all()
+def add_enrollment(request):
+    candidates = Users.objects.filter(user_role__role_id=3)
+    courses = Course.objects.all()
+    return render(request,'enroll-candidate.html', {'candidates':candidates, 'courses':courses})
 
+
+def export_candidate(request):
+    candidates = Users.objects.all()
+
+    # Create a response object with appropriate CSV headers
+    response = HttpResponse(content_type='text/csv')
+    response['Content-Disposition'] = f'attachment; filename="candidates_{timezone.now().strftime("%Y%m%d%H%M%S")}.csv"'
+
+    # Create a CSV writer and write the header
+    writer = csv.writer(response)
+    writer.writerow(['ID', 'Name', 'Phone', 'Email', 'Role'])
+
+    # Write each candidate's data to the CSV file
+    for candidate in candidates:
+        writer.writerow([candidate.user_id, candidate.user_name, candidate.user_phone, candidate.user_email, candidate.user_role.role_type])
+
+    return response
 
 
 def faculty(request):

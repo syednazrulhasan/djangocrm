@@ -1,0 +1,47 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="row">
+    <div class="col">
+    </div>
+    <div class="col-8">
+        <div class="py-4 text-center">
+            <h4>Add Enrollment</h4>
+        </div>
+
+         <form method="POST" action="">
+
+            {% csrf_token %}
+
+            <div class="form-group">
+                <label for="candidaterole">Select Candidate</label>
+                <select name="candidaterole" id="candidaterole" class="form-select">
+                  <option value="">Select Candidate</option>
+                  {% for candidate in candidates %}
+                    <option value="{{ candidate.user_id }}">{{ candidate.user_name  }} {{ candidate.user_phone }}</option>
+                  {% endfor %}
+                </select>
+            </div>
+
+
+            <div class="form-group">
+                <label for="candidatecource">Select Course</label>
+                <select name="candidatecource" id="candidatecource" class="form-select">
+                  <option value="">Select Course</option>
+                {% for course in courses %}
+                  <option  value="{{ course.course_id }}">{{ course.course_name }}</option>
+                {% endfor %}
+                </select>
+            </div>
+
+            <div class="form-group mt-3">
+                <button type="submit" class="btn btn-primary">Submit</button>
+            </div>
+
+
+         </form>
+
+    </div>
+    <div class="col">
+    </div>
+</div>
+{% endblock %}
