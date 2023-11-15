@@ -14,7 +14,6 @@ class Userroles(models.Model):
     role_created = models.DateField()
 
     
-
 class Users(models.Model):
     user_id = models.AutoField(primary_key=True)
     user_unique = models.CharField(max_length=100)
@@ -23,3 +22,9 @@ class Users(models.Model):
     user_phone = models.CharField(max_length=15)
     user_email = models.CharField(max_length=320)
     date_created = models.DateField(default='2023-11-15')
+
+class Enrollment(models.Model):
+    enrollment_id = models.AutoField(primary_key=True)
+    candidate_id = models.IntegerField(default=0, null=True, blank=True)
+    course_id = models.IntegerField(default=0, null=True, blank=True)
+    date_created = models.DateField()

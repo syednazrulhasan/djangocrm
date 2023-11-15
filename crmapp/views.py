@@ -1,6 +1,6 @@
 from django.shortcuts import render, HttpResponse, redirect, get_object_or_404
 from datetime import datetime
-from .models import Course,Userroles,Users
+from .models import Course,Userroles,Users,Enrollment
 from django.contrib import messages
 import csv
 from django.http import HttpResponse
@@ -107,10 +107,27 @@ def delete_candidate(request,user_id):
 def all_enrollment(request):
     return HttpResponse('all enrollment')
 
-def add_enrollment(request):
+def add_edit_enrollment(request,enrollment_id=None):
     candidates = Users.objects.filter(user_role__role_id=3)
     courses = Course.objects.all()
-    return render(request,'enroll-candidate.html', {'candidates':candidates, 'courses':courses})
+
+    if enrollment_id:
+        enrollments = get_object_or_404(Enrollment, enrollment_id=enrollment_id)
+    else:
+        enrollments = None
+
+    if request.method == 'POST':
+        candidateid = request.POST.get('candidaterole')
+        courseid = request.POST.get('candidatecource')
+
+        enrollment = Enrollment(candidate_id=candidateid, course_id=courseid,date_created=datetime.today() )
+        enrollment.save()
+        messages.success(request,'Enrollment added successfully')
+        return redirect('all_enrollment')
+
+
+
+    return render(request,'add-enrollment.html', {'candidates':candidates, 'courses':courses, 'enrollments':enrollments })
 
 
 def export_candidate(request):

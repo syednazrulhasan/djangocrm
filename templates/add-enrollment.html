@@ -8,7 +8,9 @@
             <h4>Add Enrollment</h4>
         </div>
 
-         <form method="POST" action="">
+         <form method="POST" action="{% url 'add_enrollment' %}">
+
+             <input type="hidden" name="recordid" value="{{ enrollment.enrollment_id }}">
 
             {% csrf_token %}
 

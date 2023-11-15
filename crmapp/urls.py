@@ -19,8 +19,9 @@ urlpatterns = [
     path('export-candidate',views.export_candidate, name='export_candidate'),
 
 
-    path('all_enrollment',views.all_enrollment, name='all_enrollment'),
-    path('add-enrollment', views.add_enrollment, name='add_enrollment'),
+    path('all-enrollment',views.all_enrollment, name='all_enrollment'),
+    path('add-enrollment',views.add_edit_enrollment, name='add_enrollment'),
+    path('edit-enrollment/<int:enrollment_id>/', views.add_edit_enrollment, name='edit_enrollment'),
 
     path('batches', views.faculty, name='batches'),
     path('add-batches', views.faculty, name='add-batches'),
