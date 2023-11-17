@@ -8,9 +8,9 @@
             <h4>Add Enrollment</h4>
         </div>
 
-         <form method="POST" action="{% url 'add_enrollment' %}">
-
-             <input type="hidden" name="recordid" value="{{ enrollment.enrollment_id }}">
+    
+        
+         <form method="POST" action="{% if enrollments.enrollment_id %}{% url 'edit_enrollment' enrollment_id=enrollments.enrollment_id %}{% else %}{% url 'add_enrollment' %}{% endif %}">
 
             {% csrf_token %}
 
@@ -19,18 +19,18 @@
                 <select name="candidaterole" id="candidaterole" class="form-select">
                   <option value="">Select Candidate</option>
                   {% for candidate in candidates %}
-                    <option value="{{ candidate.user_id }}">{{ candidate.user_name  }} {{ candidate.user_phone }}</option>
+                    <option {% if enrollments.candidate_id.user_id == candidate.user_id %}selected="selected"{% endif %} value="{{ candidate.user_id }}">{{  candidate.user_name  }} | {{ candidate.user_phone }}</option>
                   {% endfor %}
                 </select>
             </div>
 
 
             <div class="form-group">
-                <label for="candidatecource">Select Course</label>
-                <select name="candidatecource" id="candidatecource" class="form-select">
+                <label for="candidatecourse">Select Course</label>
+                <select name="candidatecourse" id="candidatecourse" class="form-select">
                   <option value="">Select Course</option>
                 {% for course in courses %}
-                  <option  value="{{ course.course_id }}">{{ course.course_name }}</option>
+                  <option {% if enrollments.course_id.course_id == course.course_id %}selected="selected"{% endif %}  value="{{ course.course_id }}">{{ course.course_name }}</option>
                 {% endfor %}
                 </select>
             </div>

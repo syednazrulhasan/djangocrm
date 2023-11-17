@@ -25,6 +25,6 @@ class Users(models.Model):
 
 class Enrollment(models.Model):
     enrollment_id = models.AutoField(primary_key=True)
-    candidate_id = models.IntegerField(default=0, null=True, blank=True)
-    course_id = models.IntegerField(default=0, null=True, blank=True)
+    candidate_id = models.ForeignKey(Users, on_delete=models.SET_NULL, null=True, blank=True)
+    course_id = models.ForeignKey(Course, on_delete=models.SET_NULL, null=True, blank=True)
     date_created = models.DateField()

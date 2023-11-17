@@ -5,6 +5,7 @@ from django.contrib import messages
 import csv
 from django.http import HttpResponse
 from django.utils import timezone
+import sys
 
 # Create your views here.
 def index(request):
@@ -73,8 +74,7 @@ def add_edit_candidate(request,user_id=None):
         userroles = Userroles.objects.all()
         courses   = Course.objects.all()
 
-    if request.method == "POST":
-        record_id = request.POST.get('recordid')
+    if request.method == "POST":    
         candidateunique = generate_unique_number()
         candidaterole = request.POST.get('candidaterole')
         candidatename = request.POST.get('candidatename')
@@ -95,7 +95,7 @@ def add_edit_candidate(request,user_id=None):
 
         return redirect('all_candidate')
 
-    return render(request, 'add-candidate.html', {'user': users, 'courses':courses, 'userroles':userroles})    
+    return render(request, 'candidate.html', {'user': users, 'courses':courses, 'userroles':userroles})    
 
 
 def delete_candidate(request,user_id):
@@ -105,29 +105,47 @@ def delete_candidate(request,user_id):
     return redirect('all_candidate')
 
 def all_enrollment(request):
-    return HttpResponse('all enrollment')
+    enrollments = Enrollment.objects.all()
+    return render(request, 'all-enrollments.html', {'enrollments': enrollments})
 
-def add_edit_enrollment(request,enrollment_id=None):
+def add_edit_enrollment(request, enrollment_id=None):
     candidates = Users.objects.filter(user_role__role_id=3)
     courses = Course.objects.all()
 
     if enrollment_id:
-        enrollments = get_object_or_404(Enrollment, enrollment_id=enrollment_id)
+        enrollment = get_object_or_404(Enrollment, enrollment_id=enrollment_id)
     else:
-        enrollments = None
+        enrollment = None
 
     if request.method == 'POST':
-        candidateid = request.POST.get('candidaterole')
-        courseid = request.POST.get('candidatecource')
+        candidate_id = request.POST.get('candidaterole')
+        course_id = request.POST.get('candidatecourse')
 
-        enrollment = Enrollment(candidate_id=candidateid, course_id=courseid,date_created=datetime.today() )
-        enrollment.save()
-        messages.success(request,'Enrollment added successfully')
-        return redirect('all_enrollment')
+        candidate_instance = get_object_or_404(Users, pk=candidate_id)
+        course_instance = get_object_or_404(Course, pk=course_id)
 
+        if enrollment_id:
+            # Editing existing enrollment
+            enrollment.candidate_id = candidate_instance
+            enrollment.course_id = course_instance
+            enrollment.date_created = datetime.today()
+            enrollment.save()
+            messages.success(request, 'Enrollment updated successfully')
+            return redirect('all_enrollment')
+        else:
+            # Adding new enrollment
+            new_enrollment = Enrollment(candidate_id=candidate_instance, course_id=course_instance, date_created=datetime.today())
+            new_enrollment.save()
+            messages.success(request, 'Enrollment added successfully')
+            return redirect('all_enrollment')
 
+    return render(request, 'enrollment.html', {'candidates': candidates, 'courses': courses, 'enrollments': enrollment})
 
-    return render(request,'add-enrollment.html', {'candidates':candidates, 'courses':courses, 'enrollments':enrollments })
+def delete_enrollment(request,enrollment_id):
+    enrollment = get_object_or_404(Enrollment, pk=enrollment_id)
+    enrollment.delete()
+    messages.success(request,'Enrollment Deleted Succesfully')
+    return redirect('all_enrollment')
 
 
 def export_candidate(request):

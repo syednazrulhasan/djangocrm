@@ -1,0 +1,8 @@
+print(request.POST)
+return render(request, 'debug.html', {'post_data': request.POST,'user_id': user_id})
+
+{% if post_data %}
+    <h2>POST Data:</h2>
+    <pre>{{ post_data }}</pre>
+    <pre>{{ user_id }}</pre>
+{% endif %}

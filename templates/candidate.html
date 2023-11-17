@@ -1,6 +1,8 @@
 {% extends 'base.html' %}
 
 {% block content %}
+
+
 <div class="row">
     <div class="col">
     </div>
@@ -12,7 +14,7 @@
 
         <form method="POST" action="{% if user.user_id %}{% url 'edit_candidate' user_id=user.user_id %}{% else %}{% url 'add_candidate' %}{% endif %}">
 
-         	<input type="hidden" name="recordid" value="{{ user.user_id }}">
+         	
             {% csrf_token %}
 
 

@@ -22,6 +22,7 @@ urlpatterns = [
     path('all-enrollment',views.all_enrollment, name='all_enrollment'),
     path('add-enrollment',views.add_edit_enrollment, name='add_enrollment'),
     path('edit-enrollment/<int:enrollment_id>/', views.add_edit_enrollment, name='edit_enrollment'),
+    path('delete-enrollment/<int:enrollment_id>', views.delete_enrollment, name='delete_enrollment'),
 
     path('batches', views.faculty, name='batches'),
     path('add-batches', views.faculty, name='add-batches'),
