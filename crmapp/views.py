@@ -186,13 +186,14 @@ def export_candidate(request):
 
     return response
 
-def export_enrollment_by_course(request, course_id=None):
-    # If the request method is GET, retrieve the selected course_id from the form submission
-    if request.method == 'GET':
-        selected_course_id = request.GET.get('candidatecourse')
-        if selected_course_id:
-            # Redirect to the same view with the selected course_id as a parameter
-            return redirect('export_enrollment_by_course', course_id=selected_course_id)
+from django.shortcuts import render, redirect
+
+def export_enrollment_by_course(request):
+    course_id = request.GET.get('candidatecourse')
+
+    if not course_id:
+        # Handle the case where no course is selected
+        return HttpResponse('Please select a course.')
 
     # Fetch enrollments based on the selected course_id
     enrollments = Enrollment.objects.filter(course_id=course_id).select_related('candidate_id')
@@ -217,6 +218,7 @@ def export_enrollment_by_course(request, course_id=None):
         ])
 
     return response
+
 
 
 

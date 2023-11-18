@@ -15,7 +15,7 @@
             <h4>Export Enrollment by Course</h4>
         </div>
 
-        <form method="get" action="{% url 'export_enrollment_by_course' default_course_id %}">
+        <form method="get" action="{% url 'export_enrollment_by_course' %}">
             {% csrf_token %}
 
 
