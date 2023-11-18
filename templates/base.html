@@ -51,13 +51,14 @@
                 <li class="nav-item dropdown">
                   <a class="nav-link dropdown-toggle" href="#" id="dropdown09" data-bs-toggle="dropdown" aria-expanded="false">Candidate</a>
                     <ul class="dropdown-menu" aria-labelledby="dropdown09">
-                        <li><a class="dropdown-item" href="{% url 'all_candidate' %}">All Candidate</a></li>
                         <li><a class="dropdown-item" href="{% url 'add_candidate' %}">Add Candidate</a></li>
+                        <li><a class="dropdown-item" href="{% url 'all_candidate' %}">All Candidate</a></li>
                         <li><hr class="dropdown-divider"></li>
-                        <li><a class="dropdown-item" href="{% url 'all_enrollment' %}">All Enrollment</a></li>
                         <li><a class="dropdown-item" href="{% url 'add_enrollment' %}">Add Enrollment</a></li>
+                        <li><a class="dropdown-item" href="{% url 'all_enrollment' %}">All Enrollment</a></li>
                         <li><hr class="dropdown-divider"></li>
-                        <li><a class="dropdown-item" href="{% url 'export_candidate' %}">Export Candidate</a></li>
+                        <li><a class="dropdown-item" href="{% url 'export_candidate' %}">Export All Candidate</a></li>
+                        <li><a class="dropdown-item" href="{% url 'export_enrollment' %}">Export Candidate by Course</a></li>
                     </ul>
                 </li>
 

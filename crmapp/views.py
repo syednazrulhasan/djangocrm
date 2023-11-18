@@ -5,7 +5,7 @@ from django.contrib import messages
 import csv
 from django.http import HttpResponse
 from django.utils import timezone
-import sys
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
 # Create your views here.
 def index(request):
@@ -59,10 +59,31 @@ def delete_course(request,course_id):
 	return redirect('all_course')
 
 
+
+
 def all_candidate(request):
-    #candidates = Users.objects.filter(user_role__role_id=3)
-    candidates = Users.objects.all()
-    return render(request,'all-candidates.html',{'candidates': candidates})
+    candidates_list = Users.objects.all()
+
+    # Set the number of items to display per page
+    items_per_page = 10  # You can adjust this value as needed
+
+    # Create a Paginator instance
+    paginator = Paginator(candidates_list, items_per_page)
+
+    # Get the current page number from the request's GET parameters
+    page = request.GET.get('page')
+
+    try:
+        candidates = paginator.page(page)
+    except PageNotAnInteger:
+        # If page is not an integer, deliver the first page.
+        candidates = paginator.page(1)
+    except EmptyPage:
+        # If page is out of range (e.g., 9999), deliver the last page.
+        candidates = paginator.page(paginator.num_pages)
+
+    return render(request, 'all-candidates.html', {'candidates': candidates})
+
 
 def add_edit_candidate(request,user_id=None):
     if user_id:
@@ -164,6 +185,45 @@ def export_candidate(request):
         writer.writerow([candidate.user_id, candidate.user_name, candidate.user_phone, candidate.user_email, candidate.user_role.role_type])
 
     return response
+
+def export_enrollment_by_course(request, course_id=None):
+    # If the request method is GET, retrieve the selected course_id from the form submission
+    if request.method == 'GET':
+        selected_course_id = request.GET.get('candidatecourse')
+        if selected_course_id:
+            # Redirect to the same view with the selected course_id as a parameter
+            return redirect('export_enrollment_by_course', course_id=selected_course_id)
+
+    # Fetch enrollments based on the selected course_id
+    enrollments = Enrollment.objects.filter(course_id=course_id).select_related('candidate_id')
+
+    # Create a response object with appropriate CSV headers
+    response = HttpResponse(content_type='text/csv')
+    response['Content-Disposition'] = f'attachment; filename="enrollments_course_{course_id}.csv"'
+
+    # Create a CSV writer and write the header
+    writer = csv.writer(response)
+    writer.writerow(['Candidate ID', 'Candidate Name', 'Phone', 'Email', 'Role', 'Date Created'])
+
+    # Write each enrollment's data to the CSV file
+    for enrollment in enrollments:
+        writer.writerow([
+            enrollment.candidate_id.user_id,
+            enrollment.candidate_id.user_name,
+            enrollment.candidate_id.user_phone,
+            enrollment.candidate_id.user_email,
+            enrollment.candidate_id.user_role.role_type,
+            enrollment.date_created
+        ])
+
+    return response
+
+
+
+def export_enrollment(request):
+    courses = Course.objects.all()
+    default_course_id = courses.first().course_id if courses.exists() else None
+    return render(request, 'export-enrollment.html', {'courses': courses, 'default_course_id': default_course_id})
 
 
 def faculty(request):
