@@ -10,71 +10,68 @@
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" />
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/select2-bootstrap-5-theme@1.3.0/dist/select2-bootstrap-5-theme.min.css" />
 
+<style type="text/css">
+
+</style>
+
 {% endblock %}
 
 {% block content %}
 <div class="row">
 
-    <div class="col">
-    </div>
+	<div class="col">
+	</div>
 
-    <div class="col-8">
-        <div class="py-4 text-center">
-            <h4>{% if batches.batch_id %}Edit Batch{% else %}Add New Batch{% endif %}</h4>
-        </div>
+	<div class="col-8">
+		<div class="py-4 text-center">
+			<h4>{% if batches.batch_id %}Edit Batch{% else %}Add New Batch{% endif %}</h4>
+		</div>
 
-        <form method="POST" action="{% if batches.batch_id %}{% url 'edit_batch' batch_id=batches.batch_id %}{% else %}{% url 'add_batch' %}{% endif %}">
-    
-            {% csrf_token %}
+		<form method="POST" action="{% if batches.batch_id %}{% url 'edit_batch' batch_id=batches.batch_id %}{% else %}{% url 'add_batch' %}{% endif %}">
+	
+			{% csrf_token %}
 
-            <div class="form-group">
-                <label for="batchname">Batch Name</label>
-                <input type="text" name="batchname" class="form-control" id="batchname"  placeholder="Enter the batch name" value="{{ batches.batch_name }}">
-            </div>
+			<div class="form-group">
+				<label for="batchname">Batch Name</label>
+				<input type="text" name="batchname" class="form-control" id="batchname"  placeholder="Enter the batch name" value="{{ batches.batch_name }}">
+			</div>
 
-            <div class="form-group">
-                <label for="candidatecourse">Select Course</label>
-                <select name="candidatecourse" id="candidatecourse" class="form-select">
-                  <option value="">Select Course</option>
-                {% for course in courses %}
-                  <option  value="{{ course.course_id }}">{{ course.course_name }}</option>
-                {% endfor %}
-                </select>
-            </div>
+			<div class="form-group">
+				<label for="candidatecourse">Select Course</label>
+				<select name="candidatecourse" id="candidatecourse" class="form-select">
+				  <option value="">Select Course</option>
+				{% for course in courses %}
+				  <option  value="{{ course.course_id }}">{{ course.course_name }}</option>
+				{% endfor %}
+				</select>
+			</div>
 
-            <div class="form-group">
-                <label for="batchname">Select Candidate</label>
-                <!-- <textarea name="batchname" class="form-control" id="batchname" placeholder="Enter the batch caldidates">{% for candidate in candidates %} {{candidate.user_name}} {% endfor %}</textarea> -->
-                <select name="batchname[]" class="form-select" id="multiple-select-field" data-placeholder="Choose Students" multiple>
-                {% for candidate in candidates %} 
-                <option>{{candidate.user_name}}</option>
-                {% endfor %}
-                
-                </select>
-            </div>
+			<div class="form-group">
+				<label for="batchstudents">Select Candidate</label>
+				<select name="batchstudents[]" class="form-select" id="multiple-select-field" data-placeholder="Choose Students" multiple>
+					{% for candidate in candidates %} 
+					<option value="{{candidate.user_id}}">{{candidate.user_name}}</option>
+					{% endfor %}
+				</select>
+			</div>
 
-            <div class="form-group">
-                <label for="batchstartdate">Batch Start Date</label>
-                <input type="text" name="batchstartdate" class="form-control" id="batchstartdate"  placeholder="Enter the start date" value="{{ batches.start_date }}">
-            </div>
+			<div class="form-group">
+				<label for="batchstartdate">Batch Start Date</label>
+				<input type="text" name="batchstartdate" class="form-control" id="batchstartdate"  placeholder="Enter the start date" value="{{ batches.start_date }}">
+			</div>
 
 
+			<div class="form-group mt-3">
+				<button type="submit" class="btn btn-primary">Submit</button>
+			</div>
+
+		</form>
 
 
+	</div>
 
-            <div class="form-group mt-3">
-                <button type="submit" class="btn btn-primary">Submit</button>
-            </div>
-
-
-
-        </form>
-
-
-    </div>
-
-    <div class="col">    
-    </div>
+	<div class="col">    
+	</div>
 
 </div>
 
@@ -87,20 +84,20 @@
 <script src="https://cdn.jsdelivr.net/npm/bootstrap-datepicker@1.9.0/dist/js/bootstrap-datepicker.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 <script>
-    $(document).ready(function(){
-        $('#batchstartdate').datepicker({
-            format: 'dd/mm/yyyy', // Date format
-            autoclose: true,
-            todayHighlight: true,
-        });
-    });
+	$(document).ready(function(){
+		$('#batchstartdate').datepicker({
+			format: 'yyyy-mm-dd', // Date format
+			autoclose: true,
+			todayHighlight: true,
+		});
+	});
 
-    $( '#multiple-select-field' ).select2( {
-        theme: "bootstrap-5",
-        width: $( this ).data( 'width' ) ? $( this ).data( 'width' ) : $( this ).hasClass( 'w-100' ) ? '100%' : 'style',
-        placeholder: $( this ).data( 'placeholder' ),
-        closeOnSelect: false,
-    } );
+	$( '#multiple-select-field' ).select2( {
+		theme: "bootstrap-5",
+		width: $( this ).data( 'width' ) ? $( this ).data( 'width' ) : $( this ).hasClass( 'w-100' ) ? '100%' : 'style',
+		placeholder: $( this ).data( 'placeholder' ),
+		closeOnSelect: false,
+	} );
 </script>
 
 {% endblock %}

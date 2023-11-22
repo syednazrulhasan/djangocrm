@@ -226,10 +226,45 @@ def all_batch(request):
     batches = Batch.objects.all()
     return render(request, 'all-batches.html', {'batches': batches})
 
-def add_edit_batch(request):
+def add_edit_batch(request, batch_id=None):
     courses = Course.objects.all()
     candida = Users.objects.filter(user_role__role_id=3)
-    return render(request, 'batch.html', {'courses': courses, 'candidates': candida } )
+
+    if batch_id:
+        oldbatch = get_object_or_404(Batch,pk=batch_id)
+    else:
+        oldbatch = None
+
+    if request.method =="POST":
+
+
+        batchname = request.POST.get('batchname')
+        courseid = request.POST.get('candidatecourse')
+
+        selected_students = request.POST.getlist('batchstudents[]', [])
+        batchstudents = ','.join(selected_students)
+        
+        batchstartdate = request.POST.get('batchstartdate')
+
+        course_instance = get_object_or_404(Course, pk=courseid)
+       
+
+        if batch_id:
+            oldbatch = get_object_or_404(Batch,pk=batch_id)
+            oldbatch.batch_name = batchname
+            oldbatch.course_id = course_instance
+            oldbatch.candidates = batchstudents
+            oldbatch.start_date = batchstartdate
+            oldbatch.save()
+            messages.success(request, 'Batch Updated Successfully')
+        else:
+            newbatch = Batch( batch_name=batchname,course_id=course_instance,candidates=batchstudents,start_date=batchstartdate,date_created=datetime.today() )
+
+            newbatch.save()
+            messages.success(request, 'Batch Created Successfully')
+        return redirect('all_batch')
+
+    return render(request, 'batch.html', {'courses': courses, 'candidates': candida, 'batches': oldbatch } )
 
 def faculty(request):
 	return HttpResponse('this is about page')
