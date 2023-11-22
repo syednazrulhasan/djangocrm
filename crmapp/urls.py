@@ -26,9 +26,10 @@ urlpatterns = [
     path('edit-enrollment/<int:enrollment_id>/', views.add_edit_enrollment, name='edit_enrollment'),
     path('delete-enrollment/<int:enrollment_id>', views.delete_enrollment, name='delete_enrollment'),
 
-    path('batches', views.faculty, name='batches'),
-    path('add-batches', views.faculty, name='add-batches'),
-    
+    path('all-batch', views.all_batch, name='all_batch'),
+    path('add-batch', views.add_edit_batch, name='add_batch'),
+    path('edit-batch/<int:batch_id>', views.add_edit_batch, name='edit_batch'),
+
     path('export-candidate', views.faculty, name='export-candidate'),
     path('fees-collections', views.faculty, name='fees-collections'),
     path('add-fees-collection', views.faculty, name='add-fees-collection'),

@@ -1,6 +1,6 @@
 from django.shortcuts import render, HttpResponse, redirect, get_object_or_404
 from datetime import datetime
-from .models import Course,Userroles,Users,Enrollment
+from .models import Course,Userroles,Users,Enrollment,Batch
 from django.contrib import messages
 import csv
 from django.http import HttpResponse
@@ -186,8 +186,6 @@ def export_candidate(request):
 
     return response
 
-from django.shortcuts import render, redirect
-
 def export_enrollment_by_course(request):
     course_id = request.GET.get('candidatecourse')
 
@@ -219,21 +217,25 @@ def export_enrollment_by_course(request):
 
     return response
 
-
-
-
 def export_enrollment(request):
     courses = Course.objects.all()
     default_course_id = courses.first().course_id if courses.exists() else None
     return render(request, 'export-enrollment.html', {'courses': courses, 'default_course_id': default_course_id})
 
+def all_batch(request):
+    batches = Batch.objects.all()
+    return render(request, 'all-batches.html', {'batches': batches})
+
+def add_edit_batch(request):
+    courses = Course.objects.all()
+    candida = Users.objects.filter(user_role__role_id=3)
+    return render(request, 'batch.html', {'courses': courses, 'candidates': candida } )
 
 def faculty(request):
 	return HttpResponse('this is about page')
 
 def contact(request):
 	return HttpResponse('this is contact page')
-
 
 def generate_unique_number():
     last_user_id = get_last_inserted_user_id()  # Replace with your logic to fetch the last user_id
