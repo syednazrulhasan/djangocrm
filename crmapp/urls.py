@@ -29,7 +29,8 @@ urlpatterns = [
     path('all-batch', views.all_batch, name='all_batch'),
     path('add-batch', views.add_edit_batch, name='add_batch'),
     path('edit-batch/<int:batch_id>', views.add_edit_batch, name='edit_batch'),
-
+    path('get_students_for_batch/<int:batch_id>/', views.get_students_for_batch, name='get_batch_data'),
+    
     path('export-candidate', views.faculty, name='export-candidate'),
     path('fees-collections', views.faculty, name='fees-collections'),
     path('add-fees-collection', views.faculty, name='add-fees-collection'),

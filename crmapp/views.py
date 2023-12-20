@@ -6,6 +6,8 @@ import csv
 from django.http import HttpResponse
 from django.utils import timezone
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
+from django.core.serializers import serialize
+from django.http import JsonResponse
 
 # Create your views here.
 def index(request):
@@ -223,8 +225,8 @@ def export_enrollment(request):
     return render(request, 'export-enrollment.html', {'courses': courses, 'default_course_id': default_course_id})
 
 def all_batch(request):
-    batches = Batch.objects.all()
-    return render(request, 'all-batches.html', {'batches': batches})
+    batches_with_course = Batch.objects.select_related('course_id').all()
+    return render(request, 'all-batches.html', {'batches': batches_with_course })
 
 def add_edit_batch(request, batch_id=None):
     courses = Course.objects.all()
@@ -265,6 +267,19 @@ def add_edit_batch(request, batch_id=None):
         return redirect('all_batch')
 
     return render(request, 'batch.html', {'courses': courses, 'candidates': candida, 'batches': oldbatch } )
+
+
+def get_students_for_batch(request, batch_id):
+    batch = get_object_or_404(Batch, batch_id=batch_id)
+    student_ids = [int(student_id) for student_id in batch.candidates.split(',')]
+    
+    students = Users.objects.filter(user_id__in=student_ids)
+
+    student_list = [{'user_id': student.user_id, 'user_name': student.user_name} for student in students]
+
+    return JsonResponse({'students': student_list})
+
+    
 
 def faculty(request):
 	return HttpResponse('this is about page')
