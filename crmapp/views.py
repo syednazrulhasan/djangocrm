@@ -231,9 +231,12 @@ def all_batch(request):
 def add_edit_batch(request, batch_id=None):
     courses = Course.objects.all()
     candida = Users.objects.filter(user_role__role_id=3)
+    candidates_list = [] 
 
     if batch_id:
         oldbatch = get_object_or_404(Batch,pk=batch_id)
+        candidates_list = [int(id_str) for id_str in oldbatch.candidates.split(',')]
+
     else:
         oldbatch = None
 
@@ -242,12 +245,9 @@ def add_edit_batch(request, batch_id=None):
 
         batchname = request.POST.get('batchname')
         courseid = request.POST.get('candidatecourse')
-
         selected_students = request.POST.getlist('batchstudents[]', [])
         batchstudents = ','.join(selected_students)
-        
         batchstartdate = request.POST.get('batchstartdate')
-
         course_instance = get_object_or_404(Course, pk=courseid)
        
 
@@ -266,7 +266,7 @@ def add_edit_batch(request, batch_id=None):
             messages.success(request, 'Batch Created Successfully')
         return redirect('all_batch')
 
-    return render(request, 'batch.html', {'courses': courses, 'candidates': candida, 'batches': oldbatch } )
+    return render(request, 'batch.html', {'courses': courses, 'candidates': candida, 'batches': oldbatch,'candidates_list':candidates_list } )
 
 
 def get_students_for_batch(request, batch_id):

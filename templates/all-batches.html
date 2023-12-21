@@ -43,12 +43,20 @@
 					
 					<td>{{ batch.start_date|date:"D, j M. Y" }}</td>
 
+
+
 					<td>
 						<!-- View Action -->
 						<a class="view-students-link" href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#viewStudentsModal" data-batch-id="{{ batch.batch_id }}">
 							<i class="bi bi-eye" title="View Students"></i>
 						</a>
 						
+						<!-- Edit Action -->
+						<a href="{% url 'edit_batch' batch.batch_id %}">
+							<i class="bi bi-pencil-square" title="Edit"></i>
+						</a>
+
+						<!-- Export Action -->
 						<a class="export-student-link" href="javascript:void(0);" data-batch-id="{{ batch.batch_id }}">
 							<i class="bi bi-box-arrow-up" title="Export"></i>
 						</a>	
