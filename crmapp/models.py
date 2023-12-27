@@ -36,3 +36,4 @@ class Batch(models.Model):
     candidates = models.TextField()
     start_date = models.DateField(default=datetime.today)
     date_created = models.DateField(default=datetime.today)
+

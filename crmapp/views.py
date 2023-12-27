@@ -235,7 +235,10 @@ def add_edit_batch(request, batch_id=None):
 
     if batch_id:
         oldbatch = get_object_or_404(Batch,pk=batch_id)
-        candidates_list = [int(id_str) for id_str in oldbatch.candidates.split(',')]
+        if oldbatch.candidates:
+            candidates_list = [int(id_str) for id_str in oldbatch.candidates.split(',')]
+        else:
+            candidates_list = []
 
     else:
         oldbatch = None
@@ -268,7 +271,7 @@ def add_edit_batch(request, batch_id=None):
 
     return render(request, 'batch.html', {'courses': courses, 'candidates': candida, 'batches': oldbatch,'candidates_list':candidates_list } )
 
-
+# this function is used to fetch students belonging to prticular batch in an ajax call
 def get_students_for_batch(request, batch_id):
     batch = get_object_or_404(Batch, batch_id=batch_id)
     student_ids = [int(student_id) for student_id in batch.candidates.split(',')]
@@ -278,6 +281,31 @@ def get_students_for_batch(request, batch_id):
     student_list = [{'user_id': student.user_id, 'user_name': student.user_name} for student in students]
 
     return JsonResponse({'students': student_list})
+
+# this function is used to export the code as csv for batch 
+def export_batch_students_csv(request, batch_id):
+    # Fetch data for the specified batch
+    batch = get_object_or_404(Batch, pk=batch_id)
+
+    # Create a response object with CSV content type
+    response = HttpResponse(content_type='text/csv')
+    response['Content-Disposition'] = f'attachment; filename="batch_{batch_id}_students.csv"'
+
+    # Create a CSV writer
+    writer = csv.writer(response)
+
+    # Write header row
+    writer.writerow(['Batch Name', 'Course Name', 'Student Names'])
+
+    # Fetch student details from Users model using the stored user_ids
+    student_ids = [int(id_str) for id_str in batch.candidates.split(',') if id_str]
+    students = Users.objects.filter(user_id__in=student_ids)
+
+    # Write data row with batch name, course name, and comma-separated student names
+    student_names = ', '.join([student.user_name for student in students])
+    writer.writerow([batch.batch_name, batch.course_id.course_name, student_names])
+
+    return response
 
     
 

@@ -20,6 +20,7 @@ urlpatterns = [
     path('export-enrollment',views.export_enrollment, name='export_enrollment'),
     path('export_enrollment_by_course/', views.export_enrollment_by_course, name='export_enrollment_by_course'),
 
+    path('export_batch_students_csv/<int:batch_id>/', views.export_batch_students_csv, name='export_batch_students_csv'),
 
     path('all-enrollment',views.all_enrollment, name='all_enrollment'),
     path('add-enrollment',views.add_edit_enrollment, name='add_enrollment'),

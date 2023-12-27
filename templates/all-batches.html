@@ -58,8 +58,9 @@
 
 						<!-- Export Action -->
 						<a class="export-student-link" href="javascript:void(0);" data-batch-id="{{ batch.batch_id }}">
-							<i class="bi bi-box-arrow-up" title="Export"></i>
-						</a>	
+						    <i class="bi bi-box-arrow-up" title="Export"></i>
+						</a>
+	
 					</td>
 				</tr>
 				{% endfor %}
@@ -188,6 +189,50 @@ jQuery(document).ready(function() {
         });
     });
 });
+
+
+
+/*code to export */
+
+
+    document.addEventListener('DOMContentLoaded', function () {
+        // Add a click event listener to the export link
+        document.querySelectorAll('.export-student-link').forEach(function (link) {
+            link.addEventListener('click', function (event) {
+                event.preventDefault();
+                // Get the batch ID from the data attribute
+                var batchId = this.getAttribute('data-batch-id');
+                // Trigger the export function
+                exportBatchStudents(batchId);
+            });
+        });
+
+        function exportBatchStudents(batchId) {
+            // Make an AJAX request to the server
+            var xhr = new XMLHttpRequest();
+            xhr.open('GET', '/export_batch_students_csv/' + batchId + '/', true);
+            xhr.responseType = 'blob'; // Set the response type to blob
+
+            xhr.onload = function () {
+                if (this.status === 200) {
+                    // Create a link element and trigger a download
+                    var blob = new Blob([this.response], { type: 'text/csv' });
+                    var link = document.createElement('a');
+                    link.href = window.URL.createObjectURL(blob);
+                    link.download = 'batch_' + batchId + '_students.csv';
+                    document.body.appendChild(link);
+                    link.click();
+                    document.body.removeChild(link);
+                } else {
+                    console.error('Failed to export batch students');
+                }
+            };
+
+            xhr.send();
+        }
+    });
+
+
 </script>
 
 
