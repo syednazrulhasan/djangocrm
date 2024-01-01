@@ -33,9 +33,16 @@ urlpatterns = [
     path('get_students_for_batch/<int:batch_id>/', views.get_students_for_batch, name='get_batch_data'),
     
     path('export-candidate', views.faculty, name='export-candidate'),
-    path('fees-collections', views.faculty, name='fees-collections'),
-    path('add-fees-collection', views.faculty, name='add-fees-collection'),
+
+
+    path('all-payments', views.all_collections, name='all_collections'),
+    path('add-payment', views.add_edit_payment, name='add_payment'),
+    path('edit-payment/<int:payment_id>', views.add_edit_payment, name='edit_payment'),
+    path('export-payment', views.faculty, name='export_collections'),
+
+    path('get_course_for_batch/<int:batch_id>/', views.get_course_for_batch, name='get_course_forbatch'),
+
+
     path('faculty', views.faculty, name='faculty'),
-    path('services', views.contact, name='services'),
-    path('contact', views.contact, name='contact'),
+
 ]

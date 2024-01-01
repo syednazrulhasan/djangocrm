@@ -1,13 +1,16 @@
 from django.shortcuts import render, HttpResponse, redirect, get_object_or_404
 from datetime import datetime
-from .models import Course,Userroles,Users,Enrollment,Batch
+from .models import Course,Userroles,Users,Enrollment,Batch,Payments
 from django.contrib import messages
-import csv
+import csv,os
 from django.http import HttpResponse
 from django.utils import timezone
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.core.serializers import serialize
 from django.http import JsonResponse
+from django.core.files.storage import default_storage
+from django.core.exceptions import ValidationError
+
 
 # Create your views here.
 def index(request):
@@ -278,9 +281,21 @@ def get_students_for_batch(request, batch_id):
     
     students = Users.objects.filter(user_id__in=student_ids)
 
-    student_list = [{'user_id': student.user_id, 'user_name': student.user_name} for student in students]
+    student_list = [{'user_id': student.user_id, 'user_name': student.user_name, 'user_phone':student.user_phone } for student in students]
 
     return JsonResponse({'students': student_list})
+
+
+def get_course_for_batch(request, batch_id):
+    batch = get_object_or_404(Batch, batch_id=batch_id)
+    course_id = batch.course_id_id
+    courses = get_object_or_404(Course,pk=course_id)
+    course_data = {
+        'id'  : courses.course_id,
+        'name': courses.course_name,
+        # Add other fields as needed
+    }
+    return JsonResponse({'course':course_data})
 
 # this function is used to export the code as csv for batch 
 def export_batch_students_csv(request, batch_id):
@@ -307,13 +322,79 @@ def export_batch_students_csv(request, batch_id):
 
     return response
 
-    
+def all_collections(request):
+    payments = Payments.objects.all()
+    return render(request, 'all-payments.html')
+
+def add_edit_payment(request, payment_id=None):
+    batchdata = Batch.objects.all()
+
+    if request.method == 'POST':
+        batch_id = request.POST.get('selectbatch')
+        course_id = request.POST.get('selectcourse')
+        candidate_id = request.POST.get('selectcandidate')
+
+        if batch_id and course_id and candidate_id:
+            batchinstance = get_object_or_404(Batch, pk=batch_id)
+            courseinstance = get_object_or_404(Course, pk=course_id)
+            candidateinstance = get_object_or_404(Enrollment, candidate_id=candidate_id, course_id=course_id)
+
+            payment_amount = request.POST.get('payment_amount')
+            payment_reference_file = request.FILES.get('payment_reference')
+
+            if payment_reference_file:
+                # Save the file to the specified folder
+                file_path = os.path.join('payment_references/', payment_reference_file.name)
+
+                try:
+                    with default_storage.open(file_path, 'wb+') as destination:
+                        for chunk in payment_reference_file.chunks():
+                            destination.write(chunk)
+                except Exception as e:
+                    # Handle any potential errors during file saving
+                    messages.error(request, f'Error saving file: {e}')
+                    return render(request, 'payments.html', {'batchdata': batchdata })
+
+                # Create a new Payments instance and assign the image to payment_reference
+                paymentwa = Payments.objects.create(
+                    batch_id=batchinstance,
+                    candidate_id=candidateinstance,
+                    course_id=courseinstance,
+                    payment_amount=payment_amount,
+                    payment_reference=file_path,  # Use the field you defined in the model
+                    date_created=timezone.now()
+                )
+
+                messages.success(request, 'Payment Added Successfully')
+                return redirect('all_collections')
+            else:
+                messages.warning(request, 'No file was uploaded.')
+
+    return render(request, 'payments.html', {'batchdata': batchdata })
+
 
 def faculty(request):
 	return HttpResponse('this is about page')
 
-def contact(request):
-	return HttpResponse('this is contact page')
+
+# this function is used to fetch courses students have enrolled to in an ajax call
+def get_courses_for_student(request, user_id):
+    # Fetch the user's enrollments with course information
+    enrollments = Enrollment.objects.filter(candidate_id=user_id).select_related('course_id')
+
+    # Extract course information from enrollments
+    courses_info = []
+    for enrollment in enrollments:
+        course_info = {
+            'course_id': enrollment.course_id.course_id,
+            'course_name': enrollment.course_id.course_name,
+            'course_fee': enrollment.course_id.course_fee,
+            'course_duration': enrollment.course_id.course_duration,
+        }
+        courses_info.append(course_info)
+
+    return JsonResponse({'courses': courses_info})
+
 
 def generate_unique_number():
     last_user_id = get_last_inserted_user_id()  # Replace with your logic to fetch the last user_id
@@ -339,3 +420,7 @@ def get_last_inserted_user_id():
     # Extract the 'user_id' value from the result
     last_inserted_user_id = last_inserted_user['user_id'] if last_inserted_user else None
     return last_inserted_user_id
+
+
+
+#def test_data():

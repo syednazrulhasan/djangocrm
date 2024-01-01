@@ -1,0 +1,178 @@
+{% extends 'base.html' %}
+
+
+
+{% block additional_styles %}
+<!-- CSS -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-datepicker@1.9.0/dist/css/bootstrap-datepicker.min.css">
+
+<!-- Select 2 -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" />
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/select2-bootstrap-5-theme@1.3.0/dist/select2-bootstrap-5-theme.min.css" />
+
+<style type="text/css">
+
+</style>
+
+{% endblock %}
+
+{% block content %}
+<div class="row">
+
+	<div class="col">
+	</div>
+
+	<div class="col-8">
+		<div class="py-4 text-center">
+			<h4>{% if payment.payment_id %}Edit Payment{% else %}Add New Payment{% endif %}</h4>
+		</div>
+
+		<form method="POST" action="{% if payment.payment_id %}{% url 'edit_payment' payment_id=payment.payment_id %}{% else %}{% url 'add_payment' %}{% endif %}" enctype="multipart/form-data">
+	
+			{% csrf_token %}
+
+			<div class="form-group">
+				<label for="selectbatch">Select Batch</label>
+				<select name="selectbatch" id="selectbatch" class="form-select">
+				  <option value="">Select Batch</option>
+				{% for batch in batchdata %}
+				  <option  value="{{ batch.batch_id }}">{{ batch.batch_name }}</option>
+				{% endfor %}
+				</select>
+			</div>
+
+			<div class="form-group">
+				<label for="selectcourse">Select Course</label>
+				<select name="selectcourse" id="selectcourse" class="form-select">
+				  <option value="">Select Course</option>
+					{% for course in coursedata %}
+				  	<option {% if course.course_id == payment.course_id %}selected="selected"{% endif %}  value="{{ payment.course_id}}">{{ payment.course_id }}</option>
+					{% endfor %}
+				</select>
+			</div>
+
+            <div class="form-group">
+                <label for="selectcandidate">Select Candidate</label>
+                <select name="selectcandidate" id="selectcandidate" class="form-select">
+                  <option value="">Select Candidate</option>
+                  {% for candidate in candidates %}
+                    <option {% if enrollments.candidate_id.user_id == candidate.user_id %}selected="selected"{% endif %} value="{{ candidate.user_id }}">{{  candidate.user_name  }} | {{ candidate.user_phone }}</option>
+                  {% endfor %}
+                </select>
+            </div>
+
+
+
+
+
+			<div class="form-group">
+				<label for="paymentamt">Payment Amount</label>
+				<input type="text" name="payment_amount" class="form-control" id="paymentamt"  placeholder="Enter the payment amount" value="{{ payment.payment_amount }}">
+			</div>
+
+
+			<div class="custom-file form-group">
+				<label for="paymentreference">Payment Reference</label>
+			    <input name="payment_reference" type="file" class="form-control" id="paymentreference" accept=".jpg, .jpeg, .png, .pdf">
+			</div>
+
+
+
+
+			<div class="form-group mt-3">
+				<button type="submit" class="btn btn-primary">Submit</button>
+			</div>
+
+		</form>
+
+
+	</div>
+
+	<div class="col">    
+	</div>
+
+</div>
+
+
+{% endblock %}
+
+{% block additional_scripts %}
+<!-- JS -->
+<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap-datepicker@1.9.0/dist/js/bootstrap-datepicker.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+<script>
+	$(document).ready(function(){
+		$('#paymentdate').datepicker({
+			format: 'yyyy-mm-dd', // Date format
+			autoclose: true,
+			todayHighlight: true,
+		});
+	});
+
+	var currentDate = new Date();
+    var formattedDate = currentDate.getFullYear() + '-' + ('0' + (currentDate.getMonth() + 1)).slice(-2) + '-' + ('0' + currentDate.getDate()).slice(-2);
+
+	$('#paymentdate').val(formattedDate)
+
+
+
+	
+    $(document).ready(function(){
+
+    	/*Fetch Enrolled Candidates of Batch*/
+        $('#selectbatch').change(function(){
+            var batchId = $(this).val();
+
+            /*Get Student of Batch*/
+	        jQuery.ajax({
+	            url: '/get_students_for_batch/' + batchId + '/',  
+	            type: 'GET',
+	            dataType: 'json',
+	            success: function(data) {
+
+
+	                if (data.students.length > 0) {
+
+	                	jQuery('#selectcandidate').empty().append('<option value="">Select Candidate</option>');
+
+	                    jQuery.each(data.students, function(index, student) {
+	                        var option = '<option value="' + student.user_id + '">' + student.user_name + ' | ' + student.user_phone + '</option>';
+						    jQuery('#selectcandidate').append(option);
+	                    });
+
+	                } else {
+	                    jQuery('#selectcandidate').empty();
+	                }
+	            },
+	            error: function(error) {
+	                console.log('Error:', error);
+	            }
+	        });
+
+
+	        /*Get course of Batch*/
+	       	jQuery.ajax({
+	            url: '/get_course_for_batch/' + batchId + '/',  
+	            type: 'GET',
+	            dataType: 'json',
+	            success: function(data) {
+	            	$('#selectcourse').empty();
+	            	var courseData = data.course;
+
+	            	var newOption = $('<option>');
+					newOption.val(courseData.id).text(courseData.name);
+					$('#selectcourse').append(newOption);
+					$('#selectcourse').val(courseData.id);
+						                
+	            },
+	            error: function(error) {
+	                console.log('Error:', error);
+	            }
+	        });
+        });
+
+    });
+</script>
+
+{% endblock %}
