@@ -2,7 +2,7 @@ from django.shortcuts import render, HttpResponse, redirect, get_object_or_404
 from datetime import datetime
 from .models import Course,Userroles,Users,Enrollment,Batch,Payments
 from django.contrib import messages
-import csv,os
+import csv,os,random,string,time
 from django.http import HttpResponse
 from django.utils import timezone
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
@@ -10,7 +10,6 @@ from django.core.serializers import serialize
 from django.http import JsonResponse
 from django.core.files.storage import default_storage
 from django.core.exceptions import ValidationError
-
 
 # Create your views here.
 def index(request):
@@ -344,7 +343,16 @@ def add_edit_payment(request, payment_id=None):
 
             if payment_reference_file:
                 # Save the file to the specified folder
-                file_path = os.path.join('payment_references/', payment_reference_file.name)
+                random_str = generate_random_name()
+
+                # Extract the file extension from the original name
+                file_name, file_extension = os.path.splitext(payment_reference_file.name)
+
+                # Create a new file name with the random string and original file extension
+                new_file_name = f'{random_str}{file_extension}'
+
+                # Combine with the path
+                file_path = os.path.join('payment_references/', new_file_name)
 
                 try:
                     with default_storage.open(file_path, 'wb+') as destination:
@@ -423,4 +431,19 @@ def get_last_inserted_user_id():
 
 
 
-#def test_data():
+
+
+def generate_random_name():
+    # Combine digits, uppercase letters, and lowercase letters
+    all_characters = string.digits + string.ascii_letters
+
+    # Generate a random 15-character string
+    random_string = ''.join(random.choice(all_characters) for _ in range(15))
+
+    # Get the current timestamp
+    current_timestamp = str(int(time.time()))
+
+    # Concatenate the random string with the timestamp
+    result = random_string + current_timestamp
+
+    return result
