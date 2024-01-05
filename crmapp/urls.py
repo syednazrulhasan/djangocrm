@@ -26,6 +26,9 @@ urlpatterns = [
     path('add-enrollment',views.add_edit_enrollment, name='add_enrollment'),
     path('edit-enrollment/<int:enrollment_id>/', views.add_edit_enrollment, name='edit_enrollment'),
     path('delete-enrollment/<int:enrollment_id>', views.delete_enrollment, name='delete_enrollment'),
+    path('get_enrollment_for_course/<int:course_id>/', views.get_enrollments_for_course, name='get_enrollment_for_course'),
+
+
 
     path('all-batch', views.all_batch, name='all_batch'),
     path('add-batch', views.add_edit_batch, name='add_batch'),
@@ -41,6 +44,7 @@ urlpatterns = [
     path('export-payment', views.faculty, name='export_collections'),
 
     path('get_course_for_batch/<int:batch_id>/', views.get_course_for_batch, name='get_course_forbatch'),
+    path('get_enrolled_candidates_for_course/<int:batch_id>/', views.get_enrolled_candidates_for_course, name='get_enrolled_candidates_for_course'),
 
 
     path('faculty', views.faculty, name='faculty'),

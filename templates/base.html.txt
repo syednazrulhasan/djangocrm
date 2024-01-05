@@ -114,16 +114,3 @@ Remember, the key to success is not just theoretical knowledge but also practica
 Bonus Challenge:
 
 Build a simple application: Apply your Python skills to build a simple application, such as a web scraper or a text-based game.
-
-
-
-
-how to merge two diverge branch without overiting each other files 
-
-how google web vital help to write a theme 
-
-how to create post type and taxonoy as a plugin 
-
-ADA Copliance 
-
-Fetch API question 

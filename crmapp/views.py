@@ -233,6 +233,7 @@ def all_batch(request):
 def add_edit_batch(request, batch_id=None):
     courses = Course.objects.all()
     candida = Users.objects.filter(user_role__role_id=3)
+
     candidates_list = [] 
 
     if batch_id:
@@ -273,7 +274,52 @@ def add_edit_batch(request, batch_id=None):
 
     return render(request, 'batch.html', {'courses': courses, 'candidates': candida, 'batches': oldbatch,'candidates_list':candidates_list } )
 
-# this function is used to fetch students belonging to prticular batch in an ajax call
+def get_enrolled_candidates_for_course(request, batch_id):
+    batch = get_object_or_404(Batch, pk=batch_id)
+
+    # Get all enrolled candidates for the course associated with the batch
+    enrolled_candidates = Enrollment.objects.filter(course_id=batch.course_id)
+
+    # Get the IDs of previously enrolled candidates in the batch
+    previously_enrolled_ids = [int(candidate_id) for candidate_id in batch.candidates.split(',')]
+
+    # Prepare the data for the multiselect field
+    enrolled_candidates_data = []
+    for candidate in enrolled_candidates:
+        enrollment_data = {
+            'id': candidate.candidate_id.user_id,
+            'text': candidate.candidate_id.user_name,
+            'selected': candidate.candidate_id.user_id in previously_enrolled_ids,
+        }
+        enrolled_candidates_data.append(enrollment_data)
+
+    if enrolled_candidates_data:
+        return JsonResponse({'enrolled_candidates_data': enrolled_candidates_data})
+    else:
+        return JsonResponse({'error': 'No enrollments found for the given batch ID'}, status=404)
+
+
+def get_enrollments_for_course(request, course_id):
+    enrollments = Enrollment.objects.filter(course_id=course_id,candidate_id__user_role__role_id=3)
+
+    if enrollments.exists():
+        response_data = []
+        for enrollment in enrollments:
+            enrollment_data = {
+                'enrollment_id': enrollment.enrollment_id,
+                'candidate_id': enrollment.candidate_id.user_id,
+                'course_id': enrollment.course_id.course_id,
+                'candidate_name': enrollment.candidate_id.user_name,
+                # Add other fields as needed
+            }
+            response_data.append(enrollment_data)
+
+        return JsonResponse({'enrollments': response_data})
+    else:
+        return JsonResponse({'error': 'Enrollments not found for the given course_id'}, status=404)
+
+
+# this function is used to fetch students belonging to particular batch in an ajax call
 def get_students_for_batch(request, batch_id):
     batch = get_object_or_404(Batch, batch_id=batch_id)
     student_ids = [int(student_id) for student_id in batch.candidates.split(',')]
@@ -284,7 +330,7 @@ def get_students_for_batch(request, batch_id):
 
     return JsonResponse({'students': student_list})
 
-
+# this function is used to fetch course belonging to particular batch in an ajax call
 def get_course_for_batch(request, batch_id):
     batch = get_object_or_404(Batch, batch_id=batch_id)
     course_id = batch.course_id_id
