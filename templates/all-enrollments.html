@@ -28,32 +28,40 @@
               <th scope="col">Candidate</th>
               <th scope="col">Course</th>
               <th scope="col">Enrolled On</th>
-              <!-- <th scope="col">Duration</th> -->
+              <th scope="col">Fee Paid</th>
+              <th scope="col">Fee Remaining</th>
               <th scope="col">Action</th>
             </tr>
           </thead>
           <tbody>
 
-            {% for enrollment in enrollments %}
-            <tr>
-                <th scope="row">{{ forloop.counter }}</th>
-                <td>{{ enrollment.candidate_id.user_name }}&nbsp;&nbsp;&nbsp;<sup>{{ enrollment.candidate_id.user_phone }}</sup></td>
-                
-                <td>{{ enrollment.course_id.course_name }}</td>
-                <td>{{ enrollment.date_created }}</td>
-                <!-- <td>{{ enrollment.course_id.course_duration }}</td> -->
-                <td>
-                    <!-- Edit Action -->
-                    <a href="{% url 'edit_enrollment' enrollment.enrollment_id %}">
-                        <i class="bi bi-pencil-square" title="Edit"></i>
-                    </a>
-                    <!-- Delete Action -->
-                    <a onclick="return confirmDelete();" href="{% url 'delete_enrollment' enrollment.enrollment_id %}">
-                        <i class="bi bi-trash" title="Delete"></i>
-                    </a>
-                </td>
-            </tr>
-            {% endfor %}
+           {{fee_paid_remaining_dict}} 
+{% for enrollment in enrollments %}
+    <tr>
+        <th scope="row">{{ forloop.counter }}</th>
+        <td>{{ enrollment.candidate_id.user_name }}&nbsp;&nbsp;&nbsp;<sup>{{ enrollment.candidate_id.user_phone }}</sup></td>
+        <td>{{ enrollment.course_id.course_name }}</td>
+        <td>{{ enrollment.date_created }}</td>
+        <td class="bg-success text-white">₹ {{enrollment.fee_paid}}</td>
+        <td class="bg-warning">₹ {{enrollment.fee_remaining}}</td>
+        <td>
+            <!-- Edit Action -->
+            <a href="{% url 'edit_enrollment' enrollment.enrollment_id %}">
+                <i class="bi bi-pencil-square" title="Edit"></i>
+            </a>
+            <!-- Delete Action -->
+            <a onclick="return confirmDelete();" href="{% url 'delete_enrollment' enrollment.enrollment_id %}">
+                <i class="bi bi-trash" title="Delete"></i>
+            </a>
+        </td>
+    </tr>
+{% endfor %}
+
+
+
+
+
+
             
           </tbody>
         </table>

@@ -10,6 +10,7 @@ from django.core.serializers import serialize
 from django.http import JsonResponse
 from django.core.files.storage import default_storage
 from django.core.exceptions import ValidationError
+from django.db.models import Sum
 
 # Create your views here.
 def index(request):
@@ -130,7 +131,34 @@ def delete_candidate(request,user_id):
     return redirect('all_candidate')
 
 def all_enrollment(request):
+    # Aggregate the payment amounts based on candidate_id and course_id
+    payment_aggregation = Payments.objects.values('candidate_id', 'course_id').annotate(total_payment=Sum('payment_amount'))
+
+    # Create a dictionary to store the total payments for each combination of candidate_id and course_id
+    total_payments_dict = {(payment['candidate_id'], payment['course_id']): payment['total_payment'] for payment in payment_aggregation}
+
+    # Fetch all enrollments
     enrollments = Enrollment.objects.all()
+
+    # Calculate fee paid and fee remaining for each enrollment
+    for enrollment in enrollments:
+        candidate_id = enrollment.candidate_id_id
+        course_id = enrollment.course_id_id
+
+        # Get the total payment for the current candidate and course combination
+        total_payment = total_payments_dict.get((candidate_id, course_id), 0)
+
+        # Get the course_fee from the related Course model
+        course_fee = enrollment.course_id.course_fee
+
+        # Calculate fee paid and fee remaining
+        fee_paid = total_payment
+        fee_remaining = course_fee - fee_paid
+
+        # Add fee_paid and fee_remaining to the enrollment instance
+        enrollment.fee_paid = fee_paid
+        enrollment.fee_remaining = fee_remaining
+
     return render(request, 'all-enrollments.html', {'enrollments': enrollments})
 
 def add_edit_enrollment(request, enrollment_id=None):
@@ -162,9 +190,10 @@ def add_edit_enrollment(request, enrollment_id=None):
             new_enrollment = Enrollment(candidate_id=candidate_instance, course_id=course_instance, date_created=datetime.today())
             new_enrollment.save()
             messages.success(request, 'Enrollment added successfully')
+
             return redirect('all_enrollment')
 
-    return render(request, 'enrollment.html', {'candidates': candidates, 'courses': courses, 'enrollments': enrollment})
+    return render(request, 'enrollment.html', {'candidates': candidates, 'courses': courses, 'enrollments': enrollment })
 
 def delete_enrollment(request,enrollment_id):
     enrollment = get_object_or_404(Enrollment, pk=enrollment_id)
@@ -382,7 +411,7 @@ def add_edit_payment(request, payment_id=None):
         if batch_id and course_id and candidate_id:
             batchinstance = get_object_or_404(Batch, pk=batch_id)
             courseinstance = get_object_or_404(Course, pk=course_id)
-            candidateinstance = get_object_or_404(Enrollment, candidate_id=candidate_id, course_id=course_id)
+            candidateinstance = get_object_or_404(Users, user_id=candidate_id)
 
             payment_amount = request.POST.get('payment_amount')
             payment_reference_file = request.FILES.get('payment_reference')
@@ -407,24 +436,28 @@ def add_edit_payment(request, payment_id=None):
                 except Exception as e:
                     # Handle any potential errors during file saving
                     messages.error(request, f'Error saving file: {e}')
-                    return render(request, 'payments.html', {'batchdata': batchdata })
+                    return redirect('all_collections')
 
-                # Create a new Payments instance and assign the image to payment_reference
-                paymentwa = Payments.objects.create(
-                    batch_id=batchinstance,
-                    candidate_id=candidateinstance,
-                    course_id=courseinstance,
-                    payment_amount=payment_amount,
-                    payment_reference=file_path,  # Use the field you defined in the model
-                    date_created=timezone.now()
-                )
-
-                messages.success(request, 'Payment Added Successfully')
-                return redirect('all_collections')
             else:
-                messages.warning(request, 'No file was uploaded.')
+                # If no file was provided, set file_path to None
+                file_path = None
 
-    return render(request, 'payments.html', {'batchdata': batchdata })
+            # Create a new Payments instance with or without payment_reference
+            paymentwa = Payments.objects.create(
+                batch_id=batchinstance,
+                candidate_id=candidateinstance,
+                course_id=courseinstance,
+                payment_amount=payment_amount,
+                payment_reference=file_path,
+                date_created=timezone.now()
+            )
+
+            messages.success(request, 'Payment Added Successfully')
+            return redirect('all_collections')
+        else:
+            messages.warning(request, 'Incomplete data provided.')
+
+    return render(request, 'payments.html', {'batchdata': batchdata})
 
 
 def faculty(request):
