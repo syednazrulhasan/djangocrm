@@ -45,3 +45,18 @@ class Payments(models.Model):
     payment_amount = models.TextField()
     payment_reference = models.ImageField(upload_to='payment_references/', null=True, blank=True)
     date_created = models.DateField(default=datetime.today)
+
+class Company(models.Model):
+    company_id = models.AutoField(primary_key=True)
+    company_name = models.TextField()
+    comany_addr = models.TextField()
+    company_poc = models.TextField()
+    contact_no = models.TextField()
+
+class Interviews(models.Model):
+    interview_id = models.AutoField(primary_key=True)
+    candidateid = models.ForeignKey(Users, on_delete=models.SET_NULL, null=True, blank=True)
+    courseid = models.ForeignKey(Course,on_delete=models.SET_NULL,null=True, blank=True)
+    interview_date = models.DateField()
+    company_id = models.ForeignKey(Company,on_delete=models.SET_NULL,null=True, blank=True)
+    date_created = models.DateField(default=datetime.today)

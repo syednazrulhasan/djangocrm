@@ -43,24 +43,30 @@
                 <li class="nav-item dropdown">
                   <a class="nav-link dropdown-toggle" href="#" id="dropdown07" data-bs-toggle="dropdown" aria-expanded="false">Courses</a>
                     <ul class="dropdown-menu" aria-labelledby="dropdown07">
-                        <li><a class="dropdown-item" href="{% url 'all_course' %}">All Courses</a></li>
                         <li><a class="dropdown-item" href="{% url 'add_course' %}">Add Course</a></li>
+                        <li><a class="dropdown-item" href="{% url 'all_course' %}">All Courses</a></li>
                     </ul>
                 </li>
 
                 <li class="nav-item dropdown">
-                  <a class="nav-link dropdown-toggle" href="#" id="dropdown09" data-bs-toggle="dropdown" aria-expanded="false">Candidate</a>
+                  <a class="nav-link dropdown-toggle" href="#" id="dropdown09" data-bs-toggle="dropdown" aria-expanded="false">Leads</a>
                     <ul class="dropdown-menu" aria-labelledby="dropdown09">
-                        <li><a class="dropdown-item" href="{% url 'add_candidate' %}">Add Candidate</a></li>
-                        <li><a class="dropdown-item" href="{% url 'all_candidate' %}">All Candidate</a></li>
-                        <li><hr class="dropdown-divider"></li>
-                        <li><a class="dropdown-item" href="{% url 'add_enrollment' %}">Add Enrollment</a></li>
-                        <li><a class="dropdown-item" href="{% url 'all_enrollment' %}">All Enrollment</a></li>
-                        <li><hr class="dropdown-divider"></li>
-                        <li><a class="dropdown-item" href="{% url 'export_candidate' %}">Export All Candidate</a></li>
-                        <li><a class="dropdown-item" href="{% url 'export_enrollment' %}">Export Candidate by Course</a></li>
+                        <li><a class="dropdown-item" href="{% url 'add_candidate' %}">Add Leads</a></li>
+                        <li><a class="dropdown-item" href="{% url 'all_candidate' %}">All Leads</a></li>
+                        <li><a class="dropdown-item" href="{% url 'export_candidate' %}">Export Leads Candidate</a></li>
+                        
                     </ul>
                 </li>
+
+                <li class="nav-item dropdown">
+                  <a class="nav-link dropdown-toggle" href="#" id="dropdown08" data-bs-toggle="dropdown" aria-expanded="false">Enrollments</a>
+                    <ul class="dropdown-menu" aria-labelledby="dropdown08">
+                        <li><a class="dropdown-item" href="{% url 'add_batch' %}">Add Enrollment</a></li>
+                        <li><a class="dropdown-item" href="{% url 'all_enrollment' %}">All Enrollment</a></li>
+                        <li><a class="dropdown-item" href="{% url 'export_enrollment' %}">Export Enrollment by Course</a></li>
+                    </ul>
+                </li>
+
 
                 <li class="nav-item dropdown">
                   <a class="nav-link dropdown-toggle" href="#" id="dropdown08" data-bs-toggle="dropdown" aria-expanded="false">Batches</a>

@@ -397,8 +397,28 @@ def export_batch_students_csv(request, batch_id):
     return response
 
 def all_collections(request):
-    payments = Payments.objects.all()
-    return render(request, 'all-payments.html')
+    payments_list = Payments.objects.all()
+
+    # Set the number of items to display per page
+    items_per_page = 10  # You can adjust this value as needed
+
+    # Create a Paginator instance
+    paginator = Paginator(payments_list, items_per_page)
+
+    # Get the current page number from the request's GET parameters
+    page = request.GET.get('page')
+
+    try:
+        payments = paginator.page(page)
+    except PageNotAnInteger:
+        # If page is not an integer, deliver the first page.
+        payments = paginator.page(1)
+    except EmptyPage:
+        # If page is out of range (e.g., 9999), deliver the last page.
+        payments = paginator.page(paginator.num_pages)
+
+
+    return render(request, 'all-payments.html',{'payments':payments})
 
 def add_edit_payment(request, payment_id=None):
     batchdata = Batch.objects.all()
