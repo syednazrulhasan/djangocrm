@@ -18,6 +18,7 @@ from django.contrib import admin
 from django.urls import path, include
 
 
+
 admin.site.site_header = "AdvaTech CRM"
 admin.site.site_title = "AdvaTech HR Services Pvt Ltd"
 admin.site.index_title = "Welcome to AdvaTech Portal"
@@ -25,5 +26,5 @@ admin.site.index_title = "Welcome to AdvaTech Portal"
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('',include('crmapp.urls'))
+    path('',include('crmapp.urls')),
 ]

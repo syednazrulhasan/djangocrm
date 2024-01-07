@@ -19,6 +19,20 @@
         position: sticky;
         top: 0;
     }
+
+    .icon-box {
+      border: 1px solid #000;
+      padding: 5px;
+      border-radius: 5px;
+      margin-right: 5px; /* Adjust as needed */
+
+    }
+    .btn-link:active,
+    .btn-link:focus,
+    .btn-link {
+      outline: none !important;
+      border: none !important;
+    }
 </style>
 </head>
 <body class="d-flex flex-column h-100">
@@ -91,9 +105,18 @@
 
                 
                 </ul>
-                <!-- <form>
-                  <input class="form-control" type="text" placeholder="Search" aria-label="Search">
-                </form> -->
+
+
+                <form id="logout-form" method="post" action="{% url 'logout' %}">
+                  {% csrf_token %}
+                </form>
+
+                <button type="button" class="btn btn-link text-decoration-none" onclick="document.getElementById('logout-form').submit();">
+                  <span class="icon-box">
+                    <i class="bi bi-power"></i>
+                  </span>
+                </button>
+
             </div>
         </div>
     </nav>

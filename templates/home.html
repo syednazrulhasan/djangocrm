@@ -5,11 +5,41 @@
 
     <div class="col">
     </div>
-    <div class="col-11">
+    <div class="col-10">
 	<h3>Hello, {{username}}</h3>
+    <h4>Today is <span class="text-success">{% now "D d M Y"%}</span> <span class="text-danger" id="clock"></span></h4>
 	</div>
 	<div class="col">
     </div>
 
 </div>
+
+  <script>
+        function updateClock() {
+            var now = new Date();
+            var hours = now.getHours();
+            var minutes = now.getMinutes();
+            var seconds = now.getSeconds();
+            var ampm = (hours >= 12) ? "PM" : "AM";
+
+            // Convert to 12-hour format
+            hours = (hours % 12 === 0) ? 12 : hours % 12;
+
+            // Add leading zero if needed
+            hours = (hours < 10) ? "0" + hours : hours;
+            minutes = (minutes < 10) ? "0" + minutes : minutes;
+            seconds = (seconds < 10) ? "0" + seconds : seconds;
+
+            var timeString = hours + ":" + minutes + ":" + seconds + " " + ampm;
+            document.getElementById("clock").innerText = timeString;
+        }
+
+        // Update the clock every second
+        setInterval(updateClock, 1000);
+
+        // Initial call to set the clock immediately
+        updateClock();
+    </script>
 {% endblock %}
+
+

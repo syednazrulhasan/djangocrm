@@ -11,17 +11,19 @@ from django.http import JsonResponse
 from django.core.files.storage import default_storage
 from django.core.exceptions import ValidationError
 from django.db.models import Sum
+from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth.decorators import login_required
 
 # Create your views here.
 def index(request):
 	content = {
-		'username' : 'Chavi'
+		'username' : 'AHSPL'
 	}
 	return render(request,'home.html',content)
 	#return HttpResponse("this is home page")
 
 def dashboard(request):
-    return HttpResponse("this is dashboard page")
+    return render(request,'dashboard.html')
 
 def all_course(request):
 	all_courses = Course.objects.all()
@@ -546,3 +548,28 @@ def generate_random_name():
     result = random_string + current_timestamp
 
     return result
+
+
+def custom_login(request):
+    if request.method == 'POST':
+        username = request.POST['username']
+        password = request.POST['password']
+        user = authenticate(request, username=username, password=password)
+        if user is not None:
+            login(request, user)
+            return redirect('dashboard')  # Redirect to your dashboard or home page
+        else:
+            # Handle invalid login
+            return render(request, 'login.html', {'error_message': 'Invalid credentials'})
+
+    # If the user is already authenticated, redirect to the dashboard
+    if request.user.is_authenticated:
+        return redirect('dashboard')
+
+    return render(request, 'login.html')
+
+    return render(request, 'login.html')
+
+def custom_logout(request):
+    logout(request)
+    return redirect('login')  # Redirect to your login page
