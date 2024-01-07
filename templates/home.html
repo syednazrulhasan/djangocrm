@@ -8,6 +8,9 @@
     <div class="col-10">
 	<h3>Hello, {{username}}</h3>
     <h4>Today is <span class="text-success">{% now "D d M Y"%}</span> <span class="text-danger" id="clock"></span></h4>
+    <div id="weather-container">
+      <p>Loading weather data...</p> 
+    </div>
 	</div>
 	<div class="col">
     </div>
@@ -40,6 +43,32 @@
         // Initial call to set the clock immediately
         updateClock();
     </script>
+
+
+    <!-- Add this to the head of your home.html file -->
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+
+    <script>
+    $(document).ready(function () {
+        // Make an AJAX request to the weather API
+        $.ajax({
+            url: '/weather/get-weather/',  // Update the URL if needed
+            type: 'GET',
+            dataType: 'json',
+            success: function (data) {
+                // Update the content of the weather container with the received data
+                $('#weather-container').html(`
+                    <h4>Temperature: <span class="text-success">${data.temperature}°C</span> | Description: <span class="text-success">${data.description}</span></h4>
+                    <h4>Sunrise: <span class="text-success">${data.sunrise}</span> | Sunset: <span class="text-success">${data.sunset}</span></h4>
+                `);
+            },
+            error: function () {
+                // Handle errors
+                $('#weather-container').html('<p>Error fetching weather data.</p>');
+            }
+        });
+    });
+</script>
 {% endblock %}
 
 

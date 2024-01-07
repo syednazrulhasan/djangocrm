@@ -557,7 +557,7 @@ def custom_login(request):
         user = authenticate(request, username=username, password=password)
         if user is not None:
             login(request, user)
-            return redirect('dashboard')  # Redirect to your dashboard or home page
+            return redirect('home')  # Redirect to your dashboard or home page
         else:
             # Handle invalid login
             return render(request, 'login.html', {'error_message': 'Invalid credentials'})
@@ -568,7 +568,6 @@ def custom_login(request):
 
     return render(request, 'login.html')
 
-    return render(request, 'login.html')
 
 def custom_logout(request):
     logout(request)

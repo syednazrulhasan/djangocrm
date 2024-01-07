@@ -27,4 +27,5 @@ admin.site.index_title = "Welcome to AdvaTech Portal"
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('',include('crmapp.urls')),
+    path('weather/', include('weather.urls')),
 ]
