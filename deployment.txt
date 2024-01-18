@@ -1,0 +1,45 @@
+Part 1 : Local Computer to Image Creation to Dockerhub
+
+root@yaseen:/home/yaseen/crm# docker build -t crm .
+
+root@yaseen:/home/yaseen/crm# docker tag djngo-crm-app syednazrulhassan/crm:1705549661
+
+root@yaseen:/home/yaseen/crm# docker push syednazrulhassan/crm:1705549661
+
+
+
+Part 2 : Docker Hub to EC2 and Run Django app as a container on server
+
+
+ubuntu@ip-172-31-1-185:~$ sudo snap install docker
+
+ubuntu@ip-172-31-1-185:~$ docker pull syednazrulhassan/crm:jan182024
+
+ubuntu@ip-172-31-1-185:~$ docker run -d -p 8000:8000 syednazrulhassan/crm:jan182024
+
+
+
+Part 3 : Update to application to be deployed to on EC2 back again
+
+bash
+
+# Pull the latest image from Docker Hub
+
+docker pull myusername/myapp:latest
+
+
+# Stop the running container (if it exists)
+
+docker stop myapp_container
+
+
+# Remove the existing container (if it exists)
+
+docker rm myapp_container
+
+
+# Run a new container from the updated image
+
+docker run -d --name myapp_container -p 8000:8000 myusername/myapp:latest
+
+By following these steps, you can ensure that your application always runs using the latest image available from Docker Hub or Amazon ECR or your preferred container registry.

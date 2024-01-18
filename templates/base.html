@@ -27,12 +27,13 @@
       margin-right: 5px; /* Adjust as needed */
 
     }
-    .btn-link:active,
-    .btn-link:focus,
-    .btn-link {
-      outline: none !important;
-      border: none !important;
+
+    button {
+      outline: none;          /* Standard syntax */
+      outline: 0 !important;             /* Firefox */
+      outline: -webkit-focus-ring-color auto 0;  /* Chrome and Safari */
     }
+
 </style>
 </head>
 <body class="d-flex flex-column h-100">
