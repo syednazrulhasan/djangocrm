@@ -49,3 +49,12 @@ By following these steps, you can ensure that your application always runs using
 
 To SSH into docker
 docker exec -it cbfe903a1086 /bin/bash
+
+
+
+
+
+
+
+-----------------------------------------------------------------
+
