@@ -1,0 +1,57 @@
+sudo apt-get update 
+sudo apt-get upgrade 
+sudo apt-get install docker.io -y
+sudo systemctl start docker
+sudo systemctl enable docker
+	
+
+1-Create a docker volume
+docker volume create mysql_data
+
+2-Verify the volume has been created 
+docker volume ls
+
+3-To pull and install mysql version 5.7 inside docker volume
+docker run -d --name mysql-container -e MYSQL_ROOT_USERNAME=root -e MYSQL_ROOT_PASSWORD=root -e MYSQL_DATABASE=crm -v mysql_data:/var/lib/mysql -p 3307:3306 mysql:5.7
+
+4-To log into mysql shell you can run command below and verify it created database as crm
+docker exec -it mysql-container mysql -uroot -proot
+
+
+5-SSH Into Docker container 
+docker exec -it mysql-container bash
+
+6-move to directory containing my.cnf
+  
+  cd /etc 
+  ls
+
+
+7-To bind mysql to connect outside to docker container 
+docker exec -it mysql-container sh -c 'echo -e "[mysqld]\nbind-address = 0.0.0.0" >> /etc/my.cnf'
+
+8-Find yout host name and then try to connect
+hostname -I
+
+mysql -uroot -proot -h127.0.0.1 -P3307
+mysql -uroot -proot -h 192.168.100.134 -P3307
+
+
+
+
+
+
+
+
+Verify Persistent Storage 
+
+5-Create a table to verify persistent storage ie;  
+CREATE TABLE abc (
+    ID INT NOT NULL PRIMARY KEY AUTO_INCREMENT
+);
+
+6-List docker containers 
+docker ps -a
+
+#6 docker restart mysql-container
+#4 docker exec -it mysql-container mysql -uroot -proot  
