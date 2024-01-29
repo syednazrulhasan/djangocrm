@@ -12,10 +12,10 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 
 from pathlib import Path
 import os
-from decouple import AutoConfig
+#from decouple import AutoConfig
 
 # Create an AutoConfig instance
-config = AutoConfig()
+# config = AutoConfig()
 
 
 
@@ -32,7 +32,8 @@ SECRET_KEY = 'django-insecure-lm33*v!cxjmg94ru*2eb&((e$54xs_8!o(txj+sw-1qs&w@pwh
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = config('ALLOWED_HOSTS', default='*').split(',')
+#ALLOWED_HOSTS = config('ALLOWED_HOSTS', default='*').split(',')
+ALLOWED_HOSTS = ['*']
 
 # Application definition
 
@@ -81,15 +82,15 @@ WSGI_APPLICATION = 'advacrmproject.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 
-# DATABASES = {
-#     'default': {
-#         'ENGINE': 'django.db.backends.sqlite3',
-#         'NAME': BASE_DIR / 'db.sqlite3',
-#     }
-# }
-
-
 DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': BASE_DIR / 'db.sqlite3',
+    }
+}
+
+
+'''DATABASES = {
     'default': {
         'ENGINE': config('DB_ENGINE', default='django.db.backends.sqlite3'),
         'NAME': config('DB_NAME'),
@@ -99,7 +100,7 @@ DATABASES = {
         'PORT': config('DB_PORT', default=''),
     }
 }
-
+'''
 
 # Password validation
 # https://docs.djangoproject.com/en/4.2/ref/settings/#auth-password-validators
