@@ -1,7 +1,8 @@
+sudo apt-get update && upgrade
+
 sudo apt-get install python3 python3-pip python3-dev virtualenv pkg-config
 
-
-
+sudo apt-get install nginx
 
 1- Clone from git in my case it was 
 git clone https://github.com/syednazrulhasan/djangocrm
@@ -26,30 +27,16 @@ python3 manage.py makemigrations
 8- Finally run the command to django on your instance is 
 python3 manage.py runserver 0.0.0.0:8000
 
+9-Python manage.py createsuperuser
 
+10- Install Gunicorn 
+pip install gunicorn
 
-9-python manage.py createsuperuser
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-9- pip install gunicorn
-
-
+11- Starting Gunicorn to serve a Django application named "advacrmproject"
+cd /home/ubuntu/djangocrm
 gunicorn advacrmproject.wsgi:application --bind 0.0.0.0:8000
 
-sudo yum install nginx
-
+12- Update Nginx configuration files
 sudo vi /etc/nginx/conf.d/advacrmproject.conf
 
 server {
