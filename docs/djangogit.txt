@@ -1,8 +1,7 @@
 sudo apt-get update && upgrade
 
-sudo apt-get install vim python3 python3-pip python3-dev virtualenv pkg-config libmysqlclient-dev
+sudo apt-get install vim python3 python3-pip python3-dev virtualenv pkg-config libmysqlclient-dev nginx
 
-sudo apt-get install nginx
 
 1- Clone from git in my case it was 
 git clone https://github.com/syednazrulhasan/djangocrm
@@ -24,64 +23,96 @@ python3 manage.py migrate
 
 python3 manage.py makemigrations 
 
-8- Finally run the command to django on your instance is 
+8- Create a super user
+python manage.py createsuperuser
+
+9- Finally run the command to django on your instance is 
 python3 manage.py runserver 0.0.0.0:8000
 
-9-Python manage.py createsuperuser
 
 10- Install Gunicorn 
 pip install gunicorn
 
 11- Starting Gunicorn to serve a Django application named "advacrmproject"
-cd /home/ubuntu/djangocrm
-gunicorn advacrmproject.wsgi:application --bind 0.0.0.0:8000
+cd /home/ubuntu/djangocrm/
 
-12- Update Nginx configuration files
-sudo vi /etc/nginx/conf.d/advacrmproject.conf
-
-server {
-    listen 80;
-    server_name your_domain_or_ip;
-
-    location = /favicon.ico { access_log off; log_not_found off; }
-    location /static/ {
-        root /path/to/your/project;
-    }
-
-    location / {
-        include proxy_params;
-        proxy_pass http://127.0.0.1:8000;  # Assuming Gunicorn is running on the same machine
-        proxy_connect_timeout 600s;
-        proxy_send_timeout 600s;
-        proxy_read_timeout 600s;
-    }
-}
+gunicorn --bind 0.0.0.0:8000 advacrmproject.wsgi:application
 
 
-1. Create a gunicorn.service File:
+
+
+
+12- Create a Gunicorn Socket
+sudo vi /etc/systemd/system/gunicorn.socket
+
+[Unit]
+Description=gunicorn socket
+
+[Socket]
+ListenStream=/run/gunicorn.sock
+
+[Install]
+WantedBy=sockets.target
+
+13- Find out user group and present working directory 
+ls 
+pwd 
+
+13- Create a gunicorn.service File:
 
 sudo vi /etc/systemd/system/gunicorn.service
 
 
 
 [Unit]
-Description=Gunicorn service for CRM Project
+Description=gunicorn daemon
+Requires=gunicorn.socket
 After=network.target
 
 [Service]
-User=your_username  # Replace with the username that runs your Django project
-Group=your_group    # Replace with the group that runs your Django project
+User=ubuntu
+Group=www-data
 WorkingDirectory=/home/ubuntu/djangocrm
-ExecStart=/home/ubuntu/djangocrm/venv/bin/gunicorn advacrmproject.wsgi:application --bind 0.0.0.0:8000
-Restart=always
+ExecStart=/home/ubuntu/djangocrm/env/bin/gunicorn \
+          --access-logfile - \
+          --workers 3 \
+          --bind unix:/run/gunicorn.sock \
+          textutils.wsgi:application
 
 [Install]
 WantedBy=multi-user.target
 
 
-sudo systemctl daemon-reload
-sudo systemctl start gunicorn
 
 
+14- Start gunicorn enable gunicorn as a service(to start automatically along with operating system in case instance is restarted)
+sudo systemctl start gunicorn.socket
+sudo systemctl enable gunicorn.socket
 
-sudo systemctl enable gunicorn
+Output
+
+Created symlink /etc/systemd/system/sockets.target.wants/gunicorn.socket → /etc/systemd/system/gunicorn.socket.
+
+15- Create a nginx configuration file 
+sudo vim /etc/nginx/sites-available/textutils
+
+server {
+    listen 80;
+    server_name 13.56.195.188;
+
+    location = /favicon.ico { access_log off; log_not_found off; }
+    location /static/ {
+        root /home/ubuntu/djangocrm;
+    }
+
+    location / {
+        include proxy_params;
+        proxy_pass http://unix:/run/gunicorn.sock;
+    }
+}
+
+16- Enable the configuration above to enable site by creating a symbolic link to configuration file
+sudo ln -s /etc/nginx/sites-available/textutils /etc/nginx/sites-enabled/
+
+17- Restart Nginx
+sudo systemctl restart nginx

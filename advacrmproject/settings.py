@@ -14,7 +14,6 @@ from pathlib import Path
 import os
 #from decouple import AutoConfig
 
-# Create an AutoConfig instance
 # config = AutoConfig()
 
 
