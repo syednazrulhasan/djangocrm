@@ -30,21 +30,18 @@ python manage.py createsuperuser
 python3 manage.py runserver 0.0.0.0:8000
 
 
-10- Install Gunicorn 
+10- Install Gunicorn (INSIDE Virtual enviorment)
 pip install gunicorn
 
 11- Starting Gunicorn to serve a Django application named "advacrmproject"
-cd /home/ubuntu/djangocrm/
-
 gunicorn --bind 0.0.0.0:8000 advacrmproject.wsgi:application
 
-
-
-
+12- Deactivate virtual enviorment
+deactivate
 
 12- Create a Gunicorn Socket
 sudo vi /etc/systemd/system/gunicorn.socket
-
+----------------------------------------------
 [Unit]
 Description=gunicorn socket
 
@@ -53,17 +50,16 @@ ListenStream=/run/gunicorn.sock
 
 [Install]
 WantedBy=sockets.target
-
+---------------------------------------------
 13- Find out user group and present working directory 
 ls 
 pwd 
 
-13- Create a gunicorn.service File:
+14- Create a gunicorn.service File:
 
 sudo vi /etc/systemd/system/gunicorn.service
 
-
-
+---------------------------------------------
 [Unit]
 Description=gunicorn daemon
 Requires=gunicorn.socket
@@ -73,15 +69,15 @@ After=network.target
 User=ubuntu
 Group=www-data
 WorkingDirectory=/home/ubuntu/djangocrm
-ExecStart=/home/ubuntu/djangocrm/env/bin/gunicorn \
+ExecStart=/home/ubuntu/djangocrm/venv/bin/gunicorn \
           --access-logfile - \
           --workers 3 \
           --bind unix:/run/gunicorn.sock \
-          textutils.wsgi:application
+          advacrmproject.wsgi:application
 
 [Install]
 WantedBy=multi-user.target
-
+---------------------------------------------
 
 
 
@@ -94,11 +90,11 @@ Output
 Created symlink /etc/systemd/system/sockets.target.wants/gunicorn.socket → /etc/systemd/system/gunicorn.socket.
 
 15- Create a nginx configuration file 
-sudo vim /etc/nginx/sites-available/textutils
+sudo vi /etc/nginx/sites-available/advacrmproject
 
 server {
     listen 80;
-    server_name 13.56.195.188;
+    server_name 18.144.68.12;
 
     location = /favicon.ico { access_log off; log_not_found off; }
     location /static/ {
@@ -112,7 +108,7 @@ server {
 }
 
 16- Enable the configuration above to enable site by creating a symbolic link to configuration file
-sudo ln -s /etc/nginx/sites-available/textutils /etc/nginx/sites-enabled/
+sudo ln -s /etc/nginx/sites-available/advacrmproject /etc/nginx/sites-enabled/
 
 17- Restart Nginx
 sudo systemctl restart nginx
