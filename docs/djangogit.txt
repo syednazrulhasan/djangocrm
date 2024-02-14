@@ -1,16 +1,18 @@
 sudo apt-get update && upgrade
 
-sudo apt-get install vim python3 python3-pip python3-dev virtualenv pkg-config libmysqlclient-dev nginx
-
+sudo apt-get install vim python3 python3-pip python3-dev pkg-config libmysqlclient-dev nginx
 
 1- Clone from git in my case it was 
 git clone https://github.com/syednazrulhasan/djangocrm
 
-2- CD into the cloned folder in my case its 
+2- CD into the cloned folder in my case its *djangocrm*
 cd djangocrm
 
-4- Create a  virtual enviorment 
-python3 -m virtualenv venv
+3- Install pip3 inside project dirctory in my case its *djangocrm*
+sudo pip3 install virtualenv
+
+4- Create a  virtual enviorment with name as venv
+virtualenv venv
 
 5- Activate the virtual enviorment
 source venv/bin/activate
@@ -52,7 +54,7 @@ ListenStream=/run/gunicorn.sock
 WantedBy=sockets.target
 ---------------------------------------------
 13- Find out user group and present working directory 
-ls 
+ll
 pwd 
 
 14- Create a gunicorn.service File:
@@ -82,6 +84,7 @@ WantedBy=multi-user.target
 
 
 14- Start gunicorn enable gunicorn as a service(to start automatically along with operating system in case instance is restarted)
+
 sudo systemctl start gunicorn.socket
 sudo systemctl enable gunicorn.socket
 
