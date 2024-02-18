@@ -255,51 +255,71 @@ mysql -uroot -proot -h127.0.0.1 -P3307 crm
 
 ### Docker Commands
 *To list all container irrespective of state https://imgur.com/IqLCyXK
+```
 docker ps -a 
-
+```
 *To list all running container
+```
 docker ps
-
+```
 *To stop a container 
-docker stop 702a5d56ee6d  where 702a5d56ee6d is container id
+```
+docker stop 702a5d56ee6d
+```
+where 702a5d56ee6d is container id
 
+```
 *To start a container
+```
 docker start 702a5d56ee6d where 702a5d56ee6d is container id
-
+```
 *To remove(delete) a container 
-docker rm 702a5d56ee6d where 702a5d56ee6d is container id and container needs to be in stopped state before this command is issued
+```
+docker rm 702a5d56ee6d
+```
+where 702a5d56ee6d is container id and container needs to be in stopped state before this command is issued
 
 *To list all images on system
+```
 docker images
-
+```
 *To remove image from system 
-docker rmi 5107333e08a8  where 5107333e08a8 is image id of image
+```
+docker rmi 5107333e08a8
+```
+where 5107333e08a8 is image id of image
 
 *To run a container out of an image 
+```
 docker run -d --name  --network  -e  -v  -p  mysql:5.7  where _d stands for detached mode, --name* stands for name of container, --network stands for specifying network name, -e stands for specifying environment variables -v is used to specify volume -p is used to expose/map ports 
-
+```
 *To create a docker volume
+```
 docker volume create mysql_data
-
+```
 *To list volume 
+```
 docker volume ls
-
+```
 *To remove volume
-docker volume rm mysql_data *THIS WILL REMOVE ALL DATA MAPPED TO CONTAINER*
+```
+docker volume rm mysql_data
+```
+*THIS WILL REMOVE ALL DATA MAPPED TO CONTAINER*
 
 *To stop all running containers
-
+```
 docker stop $(docker ps -a -q)
-
+```
 *To remove all containers that are stopped
-
+```
 docker rm -f $(docker ps -a -q)
-
+```
 *To remove images that are not in use
-
+```
 *docker rmi -f $(docker images -q)
-
+```
 *To clear system of all cluttered containers
-
+```
 docker system prune -a
-
+```
