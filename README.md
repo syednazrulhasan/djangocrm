@@ -268,7 +268,6 @@ docker stop 702a5d56ee6d
 ```
 where 702a5d56ee6d is container id
 
-```
 *To start a container
 ```
 docker start 702a5d56ee6d where 702a5d56ee6d is container id
